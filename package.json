@@ -4,6 +4,7 @@
   "description": "Renders Mobiledoc input to React tree",
   "main": "index.js",
   "scripts": {
+    "start": "webpack-dev-server --progress",
     "lint": "eslint src",
     "test": "karma start --single-run",
     "test:watch": "karma start",
@@ -32,6 +33,9 @@
     "sinon": "^2.0.0-pre",
     "sinon-chai": "^2.8.0",
     "webpack": "^1.13.0",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.12.2",
     "webpack-merge": "^0.14.0"
   },
   "license": "ISC",

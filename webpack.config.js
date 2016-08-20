@@ -24,6 +24,28 @@ config.module = {
   ]
 };
 
+// dev server
+if (TARGET === 'start' || !TARGET) {
+  module.exports = merge(config, {
+    devtool: 'inline-source-map',
+    entry: ['./demo/index.js'],
+    output: {
+      devtoolModuleFilenameTemplate: '[resourcePath]',
+      devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
+    },
+    devServer: {
+      contentBase: './demo',
+      hot: true,
+      inline: true,
+      progress: true,
+      stats: 'error-only'
+    },
+    plugins: [
+      new webpack.HotModuleReplacementPlugin()
+    ]
+  });
+}
+
 // karma and friends
 if (/^test/.test(TARGET)) {
   module.exports = merge(config, {
