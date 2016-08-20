@@ -1,0 +1,38 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    }
+  },
+  "rules": {
+    "eqeqeq": 2,
+    "no-const-assign": 2,
+    "prefer-const": 2,
+    "semi": [2, "always"],
+
+    "array-bracket-spacing": [1, "never"],
+    "arrow-spacing": 1,
+    "brace-style": [1, "1tbs", {"allowSingleLine": true}],
+    "comma-style": [1, "last"],
+    "indent": [1, 2],
+    "keyword-spacing": 1,
+    "linebreak-style": [1, "unix"],
+    "no-console": 1,
+    "no-unused-vars": 1,
+    "no-trailing-spaces": 1,
+    "object-curly-spacing": [1, "always", {"objectsInObjects": false, "arraysInObjects": false}],
+    "padded-blocks": [1, "never"],
+    "space-before-blocks": 1,
+    "space-in-parens": 1,
+    "space-infix-ops": 1
+  }
+}
