@@ -17,6 +17,5 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
   }
 };
 
-const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
+export const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
 
-export default markersToTree;

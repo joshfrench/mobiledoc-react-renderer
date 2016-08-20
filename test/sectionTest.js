@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import markersToTree from '../src/index';
+import { markersToTree } from '../src/section';
 
 const tree = ['P', []];
 let result;
