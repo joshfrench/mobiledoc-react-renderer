@@ -8,7 +8,8 @@ describe('markersToTree()', () => {
     const markers = [
       [[], 0, 'No children']
     ];
-    expect(markers.reduce(markersToTree, [tree])).to.eql(['P', ['No children']]);
+    const [result] = markers.reduce(markersToTree, [tree]);
+    expect(result).to.eql(['P', ['No children']]);
   });
 
   it('does not mutate original', () => {
@@ -17,5 +18,14 @@ describe('markersToTree()', () => {
     ];
     markers.reduce(markersToTree, [tree]);
     expect(tree).to.eql(['P', []]);
+  });
+
+  it('renders multiple markers', () => {
+    const markers = [
+      [[], 0, 'A'],
+      [[], 0, 'B']
+    ];
+    const [result] = markers.reduce(markersToTree, [tree]);
+    expect(result).to.eql(['P', ['A', 'B']]);
   });
 });

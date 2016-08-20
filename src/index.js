@@ -8,7 +8,7 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
   if (tagsToOpen.length === 0) {
     node[CHILDREN] = [...node[CHILDREN], value];
     path = path.slice(0, path.length - tagsToClose);
-    return tree;
+    return [tree, path];
   } else {
     const [newTag, ...rest] = tagsToOpen;
     node[CHILDREN] = [...node[CHILDREN], [newTag, []]];
@@ -18,4 +18,5 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
 };
 
 const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
+
 export default markersToTree;
