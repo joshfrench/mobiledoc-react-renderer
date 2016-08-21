@@ -29,8 +29,17 @@ module.exports = function(config) {
             test: /\.js$/,
             loader: 'babel',
             exclude: /node_modules\//
+          },
+          {
+            test: /\.json$/,
+            loader: 'json'
           }
         ]
+      },
+      externals: {
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true
       }
     },
 

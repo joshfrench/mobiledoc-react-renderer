@@ -53,6 +53,13 @@ if (/^test/.test(TARGET)) {
     output: {
       devtoolModuleFilenameTemplate: '[resourcePath]',
       devtoolFallbackModuleFilenameTemplate: '[resourcePath]?[hash]'
+    },
+    // enzyme compat
+    externals: {
+      'cheerio': 'window',
+      'react/addons': true,
+      'react/lib/ExecutionEnvironment': true,
+      'react/lib/ReactContext': true
     }
   });
 }
