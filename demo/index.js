@@ -1,4 +1,8 @@
-import markersToTree from '../src/index';
+import { markersToTree } from '../src/index';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+window.React = React;
 
 window.markersToTree = markersToTree;
 window.tree = ['P', []];
