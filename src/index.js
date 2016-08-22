@@ -1,5 +1,5 @@
-import { markersToTree } from './section';
+import MobiledocRenderer from './MobiledocRenderer';
 
 export {
-  markersToTree
+  MobiledocRenderer
 };

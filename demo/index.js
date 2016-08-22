@@ -1,12 +1,20 @@
-import { markersToTree } from '../src/index';
+import MobiledocRenderer from '../src/MobiledocRenderer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-window.React = React;
+const mobiledoc = {
+  markups: [
+    ['b'],
+    ['a']
+  ],
+  sections: [
+    [1, 'p', [
+      [[], 0, 'Normal '],
+      [[1], 0, 'Linked '],
+      [[0], 2, 'and bold']
+    ]]
+  ]
+};
 
-window.markersToTree = markersToTree;
-window.tree = ['P', []];
-window.markers = [
-  [[], 0, 'A'],
-  [[], 0, 'B']
-];
+const renderer = React.createElement(MobiledocRenderer, { mobiledoc });
+ReactDOM.render(renderer, document.getElementById('root'));
