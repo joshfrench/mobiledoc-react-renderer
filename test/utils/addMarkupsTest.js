@@ -13,8 +13,6 @@ describe('addMarkup()', () => {
       [[0], 2, 'Bold']
     ];
 
-    console.log(JSON.stringify(addMarkups(markups, markers)));
-
     expect(addMarkups(markups, markers)).to.eql([
       [[], 0, 'Normal'],
       [['a'], 0, 'Linked'],

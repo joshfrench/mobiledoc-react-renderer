@@ -14,4 +14,15 @@ describe('renderSection', () => {
     const wrapper = shallow(renderSection(section));
     expect(wrapper).to.have.html('<p>ohai</p>');
   });
+
+  it('renders a section with markers', () => {
+    const section = [
+      1, 'div', [
+        [['a'], 1, 'linked']
+      ]
+    ];
+
+    const wrapper = shallow(renderSection(section));
+    expect(wrapper).to.have.html('<div><a>linked</a></div>');
+  });
 });
