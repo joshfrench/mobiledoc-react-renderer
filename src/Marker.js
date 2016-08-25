@@ -20,7 +20,17 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
 
 export const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
 
+
+const kvReduce = (obj, key, i, arr) => {
+  if (i % 2 === 0) {
+    obj[key] = arr[i + 1];
+  }
+  return obj;
+};
+
+const attrsFromMarkup = ([tag, attrs = []]) => attrs.reduce(kvReduce, {});
+
 export const markersToMarkup = (markups) => {
-  const mapMarkup = ([idx, children = []]) => [markups[idx][TAGNAME], children.map(markersToMarkup(markups))];
+  const mapMarkup = ([idx, children = []]) => [markups[idx][TAGNAME], attrsFromMarkup(markups[idx]), children.map(markersToMarkup(markups))];
   return (child) => Array.isArray(child) ? mapMarkup(child) : child;
 };

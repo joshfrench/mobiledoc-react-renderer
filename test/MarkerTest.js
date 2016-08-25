@@ -74,11 +74,11 @@ describe('markersToMarkup()', () => {
   it('maps marker indices to tag names', () => {
     const markups = [
       ['b'],
-      ['a']
+      ['a', ['rel', 'nofollow']]
     ];
     const markers = ['Plain text', [1, [[0, ['bold link']]]]];
 
     const mapper = markersToMarkup(markups);
-    expect(markers.map(mapper)).to.eql(['Plain text', ['a', [['b', ['bold link']]]]]);
+    expect(markers.map(mapper)).to.eql(['Plain text', ['a', { rel: 'nofollow' }, [['b', {}, ['bold link']]]]]);
   });
 });
