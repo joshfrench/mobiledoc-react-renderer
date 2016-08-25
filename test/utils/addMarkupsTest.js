@@ -2,21 +2,13 @@ import { expect } from 'chai';
 import addMarkups from '../../src/utils/addMarkups';
 
 describe('addMarkup()', () => {
-  it('maps tag names to individual markers', () => {
+  it('maps marker indices to tag names', () => {
     const markups = [
       ['b'],
       ['a']
     ];
-    const markers = [
-      [[], 0, 'Normal'],
-      [[1], 0, 'Linked'],
-      [[0], 2, 'Bold']
-    ];
+    const tree = [1, [[0, ['bold link']]]];
 
-    expect(addMarkups(markups, markers)).to.eql([
-      [[], 0, 'Normal'],
-      [['a'], 0, 'Linked'],
-      [['b'], 2, 'Bold']
-    ]);
+    expect(addMarkups(markups, tree)).to.eql(['a', [['b', ['bold link']]]]);
   });
 });

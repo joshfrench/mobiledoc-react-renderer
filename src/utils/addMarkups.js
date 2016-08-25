@@ -6,18 +6,16 @@ const TAGNAME = 0;
  *     ['b'],
  *     ['a', { rel: 'nofollow' }]
  *   ],
- *   sections: [
- *     [1, 'p', [
- *       [[], 0, 'Normal '],
- *       [[1], 0, 'Linked '],
- *       [[0], 1, 'and bold.]
- *     ]]
+ *   tree: [
+ *     [1, [[0, ['a bold link']]]]
  *   ]
  * }
  */
 
-const toMarkup = (markups) =>
-  ([tagsToOpen = [], ...marker]) => [tagsToOpen.map((i) => markups[i][TAGNAME]), ...marker];
+const addMarkups = (markups, [marker, children = []]) => {
+  const makeChild = (c) => Array.isArray(c) ? addMarkups(markups, c) : c;
+  return [markups[marker][TAGNAME], children.map(makeChild)];
+};
 
-const addMarkups = (markups, markers) => markers.map(toMarkup(markups));
+
 export default addMarkups;
