@@ -18,9 +18,9 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
   }
 };
 
-export const toTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
+export const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
 
-export const toMarkup = (markups) => {
-  const mapMarkup = ([idx, children = []]) => [markups[idx][TAGNAME], children.map(toMarkup(markups))];
+export const markersToMarkup = (markups) => {
+  const mapMarkup = ([idx, children = []]) => [markups[idx][TAGNAME], children.map(markersToMarkup(markups))];
   return (child) => Array.isArray(child) ? mapMarkup(child) : child;
 };

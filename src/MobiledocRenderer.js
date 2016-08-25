@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import addMarkups from './utils/addMarkups';
-import renderSection from './section';
+import { sectionToTree, mapMarkers } from './Section';
+import { markersToMarkup } from './Marker';
+import treeToReact from './utils/treeToReact';
 
 const MobiledocRenderer = ({ mobiledoc }) => {
-  const { markups } = mobiledoc;
-  const withMarkups = (markers) => addMarkups(markups, markers);
-  const sections = mobiledoc.sections.map(([type, tagName, markers]) => [type, tagName, withMarkups(markers)]);
+  const { markups, sections } = mobiledoc;
+  const toMarkup = markersToMarkup(markups);
+  const sectionsWithMarkup = sections.map(sectionToTree)
+                                     .map(mapMarkers(toMarkup));
+
   return (
     <div>
-      {sections.map(renderSection)}
+      {sectionsWithMarkup.map(treeToReact)}
     </div>
   );
 };

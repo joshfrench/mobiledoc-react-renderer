@@ -1,15 +1,15 @@
 import { expect } from 'chai';
-import { toMarkup, toTree } from '../src/Marker';
+import { markersToMarkup, markersToTree } from '../src/Marker';
 
 const tree = ['P', []];
 let result;
 
-describe('Marker.toTree()', () => {
+describe('markersToTree()', () => {
   it('renders a simple marker', () => {
     const markers = [
       [[], 0, 'No children']
     ];
-    [result] = markers.reduce(toTree, [tree]);
+    [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(['P', ['No children']]);
   });
 
@@ -17,7 +17,7 @@ describe('Marker.toTree()', () => {
     const markers = [
       [[], 0, '.']
     ];
-    markers.reduce(toTree, [tree]);
+    markers.reduce(markersToTree, [tree]);
     expect(tree).to.eql(['P', []]);
   });
 
@@ -26,7 +26,7 @@ describe('Marker.toTree()', () => {
       [[], 0, 'A'],
       [[], 0, 'B']
     ];
-    [result] = markers.reduce(toTree, [tree]);
+    [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(['P', ['A', 'B']]);
   });
 
@@ -35,7 +35,7 @@ describe('Marker.toTree()', () => {
       [[0], 0, 'Opens markup 0'],
       [[], 1, 'Closes markup 0']
     ];
-    [result] = markers.reduce(toTree, [tree]);
+    [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
         [0, ['Opens markup 0', 'Closes markup 0']]]]);
@@ -46,7 +46,7 @@ describe('Marker.toTree()', () => {
       [[0], 0, 'Opens 0'],
       [[1], 2, 'Opens 1, Closes 1 and 0']
     ];
-    [result] = markers.reduce(toTree, [tree]);
+    [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
         [0, [
@@ -60,7 +60,7 @@ describe('Marker.toTree()', () => {
       [[1], 1, 'Opens/closes 1'],
       [[], 1, 'Closes 0']
     ];
-    [result] = markers.reduce(toTree, [tree]);
+    [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
         [0, [
@@ -70,7 +70,7 @@ describe('Marker.toTree()', () => {
   });
 });
 
-describe('Marker.toMarkup()', () => {
+describe('markersToMarkup()', () => {
   it('maps marker indices to tag names', () => {
     const markups = [
       ['b'],
@@ -78,7 +78,7 @@ describe('Marker.toMarkup()', () => {
     ];
     const markers = ['Plain text', [1, [[0, ['bold link']]]]];
 
-    const mapper = toMarkup(markups);
+    const mapper = markersToMarkup(markups);
     expect(markers.map(mapper)).to.eql(['Plain text', ['a', [['b', ['bold link']]]]]);
   });
 });
