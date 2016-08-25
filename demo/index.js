@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 const mobiledoc = {
   markups: [
     ['b'],
-    ['a', ['href', '#']]
+    ['a']
   ],
   sections: [
     [1, 'p', [
