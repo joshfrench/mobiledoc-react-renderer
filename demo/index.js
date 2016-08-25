@@ -16,5 +16,5 @@ const mobiledoc = {
   ]
 };
 
-const renderer = React.createElement(MobiledocRenderer, { mobiledoc });
+const renderer = React.createElement(MobiledocRenderer, { mobiledoc, className: 'foo' });
 ReactDOM.render(renderer, document.getElementById('root'));
