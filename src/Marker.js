@@ -1,3 +1,4 @@
+const TAGNAME = 0;
 const CHILDREN = 1;
 
 const descend = (tree, path) => path.reduce((tree, idx) => tree[CHILDREN][idx], tree);
@@ -17,6 +18,9 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
   }
 };
 
-const markersToTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
+export const toTree = ([tree, path = []], marker) => addMarker(tree, path, ...marker);
 
-export default markersToTree;
+export const toMarkup = (markups) => {
+  const mapMarkup = ([idx, children = []]) => [markups[idx][TAGNAME], children.map(toMarkup(markups))];
+  return (child) => Array.isArray(child) ? mapMarkup(child) : child;
+};

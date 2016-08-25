@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import renderSection from '../src/section';
+import { toTree } from '../src/Section';
 
-describe('renderSection', () => {
+describe('Section.toTree()', () => {
   it('renders a section with its root tag', () => {
     const section = [
       1, 'p', [
@@ -9,7 +9,7 @@ describe('renderSection', () => {
       ]
     ];
 
-    expect(renderSection(section)).to.eql(['p', ['ohai']]);
+    expect(toTree(section)).to.eql(['p', ['ohai']]);
   });
 
   it('renders a section with markers', () => {
@@ -19,6 +19,6 @@ describe('renderSection', () => {
       ]
     ];
 
-    expect(renderSection(section)).to.eql(['div', [[0, ['linked']]]]);
+    expect(toTree(section)).to.eql(['div', [[0, ['linked']]]]);
   });
 });
