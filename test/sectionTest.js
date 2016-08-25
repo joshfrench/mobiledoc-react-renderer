@@ -1,6 +1,4 @@
-import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
 import renderSection from '../src/section';
 
 describe('renderSection', () => {
@@ -11,18 +9,16 @@ describe('renderSection', () => {
       ]
     ];
 
-    const wrapper = shallow(renderSection(section));
-    expect(wrapper).to.have.html('<p>ohai</p>');
+    expect(renderSection(section)).to.eql(['p', ['ohai']]);
   });
 
   it('renders a section with markers', () => {
     const section = [
       1, 'div', [
-        [['a'], 1, 'linked']
+        [[0], 1, 'linked']
       ]
     ];
 
-    const wrapper = shallow(renderSection(section));
-    expect(wrapper).to.have.html('<div><a>linked</a></div>');
+    expect(renderSection(section)).to.eql(['div', [[0, ['linked']]]]);
   });
 });
