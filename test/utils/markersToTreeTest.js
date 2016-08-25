@@ -32,40 +32,40 @@ describe('markersToTree()', () => {
 
   it('renders simple nested marker', () => {
     const markers = [
-      [['A'], 0, 'Opens A'],
-      [[], 1, 'Closes A']
+      [[0], 0, 'Opens markup 0'],
+      [[], 1, 'Closes markup 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
-        ['A', ['Opens A', 'Closes A']]]]);
+        [0, ['Opens markup 0', 'Closes markup 0']]]]);
   });
 
   it('renders multiple nested markers', () => {
     const markers = [
-      [['A'], 0, 'Opens A'],
-      [['B'], 2, 'Opens B, Closes A and B']
+      [[0], 0, 'Opens 0'],
+      [[1], 2, 'Opens 1, Closes 1 and 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
-        ['A', [
-          'Opens A',
-          ['B', ['Opens B, Closes A and B']]]]]]);
+        [0, [
+          'Opens 0',
+          [1, ['Opens 1, Closes 1 and 0']]]]]]);
   });
 
   it('closes intermediary tags', () => {
     const markers = [
-      [['A'], 0, 'Opens A'],
-      [['B'], 1, 'Opens/closes B'],
-      [[], 1, 'Closes A']
+      [[0], 0, 'Opens 0'],
+      [[1], 1, 'Opens/closes 1'],
+      [[], 1, 'Closes 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
       ['P', [
-        ['A', [
-          'Opens A',
-          ['B', ['Opens/closes B']],
-          'Closes A']]]]);
+        [0, [
+          'Opens 0',
+          [1, ['Opens/closes 1']],
+          'Closes 0']]]]);
   });
 });
