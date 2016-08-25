@@ -1,7 +1,8 @@
 import { expect } from 'chai';
+import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from '../src/utils/nodeTypes';
 import { markersToMarkup, markersToTree } from '../src/Marker';
 
-const tree = ['P', []];
+const tree = [MARKUP_SECTION_TYPE, 'P', []];
 let result;
 
 describe('markersToTree()', () => {
@@ -10,7 +11,7 @@ describe('markersToTree()', () => {
       [[], 0, 'No children']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
-    expect(result).to.eql(['P', ['No children']]);
+    expect(result).to.eql([MARKUP_SECTION_TYPE, 'P', ['No children']]);
   });
 
   it('does not mutate original', () => {
@@ -18,7 +19,7 @@ describe('markersToTree()', () => {
       [[], 0, '.']
     ];
     markers.reduce(markersToTree, [tree]);
-    expect(tree).to.eql(['P', []]);
+    expect(tree).to.eql([MARKUP_SECTION_TYPE, 'P', []]);
   });
 
   it('renders multiple markers', () => {
@@ -27,7 +28,7 @@ describe('markersToTree()', () => {
       [[], 0, 'B']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
-    expect(result).to.eql(['P', ['A', 'B']]);
+    expect(result).to.eql([MARKUP_SECTION_TYPE, 'P', ['A', 'B']]);
   });
 
   it('renders simple nested marker', () => {
@@ -37,8 +38,8 @@ describe('markersToTree()', () => {
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
-      ['P', [
-        [0, ['Opens markup 0', 'Closes markup 0']]]]);
+      [MARKUP_SECTION_TYPE, 'P', [
+        [MARKUP_MARKER_TYPE, 0, ['Opens markup 0', 'Closes markup 0']]]]);
   });
 
   it('renders multiple nested markers', () => {
@@ -48,10 +49,10 @@ describe('markersToTree()', () => {
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
-      ['P', [
-        [0, [
+      [MARKUP_SECTION_TYPE, 'P', [
+        [MARKUP_MARKER_TYPE, 0, [
           'Opens 0',
-          [1, ['Opens 1, Closes 1 and 0']]]]]]);
+          [MARKUP_MARKER_TYPE, 1, ['Opens 1, Closes 1 and 0']]]]]]);
   });
 
   it('closes intermediary tags', () => {
@@ -62,23 +63,10 @@ describe('markersToTree()', () => {
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
-      ['P', [
-        [0, [
+      [MARKUP_SECTION_TYPE, 'P', [
+        [MARKUP_MARKER_TYPE, 0, [
           'Opens 0',
-          [1, ['Opens/closes 1']],
+          [MARKUP_MARKER_TYPE, 1, ['Opens/closes 1']],
           'Closes 0']]]]);
-  });
-});
-
-describe('markersToMarkup()', () => {
-  it('maps marker indices to tag names', () => {
-    const markups = [
-      ['b'],
-      ['a']
-    ];
-    const markers = ['Plain text', [1, [[0, ['bold link']]]]];
-
-    const mapper = markersToMarkup(markups);
-    expect(markers.map(mapper)).to.eql(['Plain text', ['a', [['b', ['bold link']]]]]);
   });
 });

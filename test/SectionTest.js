@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from '../src/utils/nodeTypes';
 import { sectionToTree } from '../src/Section';
 
 describe('sectionToTree()', () => {
@@ -9,7 +10,7 @@ describe('sectionToTree()', () => {
       ]
     ];
 
-    expect(sectionToTree(section)).to.eql(['p', ['ohai']]);
+    expect(sectionToTree(section)).to.eql([MARKUP_SECTION_TYPE, 'p', ['ohai']]);
   });
 
   it('renders a section with markers', () => {
@@ -19,6 +20,6 @@ describe('sectionToTree()', () => {
       ]
     ];
 
-    expect(sectionToTree(section)).to.eql(['div', [[0, ['linked']]]]);
+    expect(sectionToTree(section)).to.eql([MARKUP_SECTION_TYPE, 'div', [[MARKUP_MARKER_TYPE, 0, ['linked']]]]);
   });
 });
