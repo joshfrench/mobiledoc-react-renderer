@@ -1,3 +1,4 @@
+import React from 'react';
 import { MARKUP_MARKER_TYPE } from './utils/nodeTypes';
 
 const kvReduce = (obj, key, i, arr) => {
@@ -7,13 +8,13 @@ const kvReduce = (obj, key, i, arr) => {
   return obj;
 };
 
-export const markupMapper = (markups) => {
+export const nodesToTags = (markups) => {
   const getTagFor = ([type, tag]) => {
-    const TAGNAME = 0;
-    const ATTRS   = 1;
     switch (type) {
-    case MARKUP_MARKER_TYPE:
-      return [markups[tag][TAGNAME], markups[tag][ATTRS].reduce(kvReduce, {})];
+    case MARKUP_MARKER_TYPE: {
+      const [tagname, attrs = []] = markups[tag];
+      return [tagname, attrs.reduce(kvReduce, {})];
+    }
     default:
       return [tag, {}];
     }
@@ -23,9 +24,12 @@ export const markupMapper = (markups) => {
     if (Array.isArray(node)) {
       const [type, tag, children = []] = node;
       const [tagName, attrs] = getTagFor(node);
-      return [type, tagName, attrs, children.map(markupMapper(markups))];
+      return [type, tagName, attrs, children.map(nodesToTags(markups))];
     } else {
       return node;
     }
   };
 };
+
+const makeChild = (c) => Array.isArray(c) ? treeToReact(c) : c;
+export const treeToReact = ([nodeType, tagName, attrs, children = []]) => React.createElement(tagName, attrs, children.map(makeChild));
