@@ -1,5 +1,5 @@
 import React from 'react';
-import { MARKUP_MARKER_TYPE } from './utils/nodeTypes';
+import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from './utils/nodeTypes';
 
 const kvReduce = (obj, key, i, arr) => {
   if (i % 2 === 0) {
@@ -32,4 +32,13 @@ export const nodesToTags = (markups) => {
 };
 
 const makeChild = (c) => Array.isArray(c) ? treeToReact(c) : c;
-export const treeToReact = ([nodeType, tagName, attrs, children = []]) => React.createElement(tagName, attrs, children.map(makeChild));
+
+export const treeToReact = ([nodeType, tag, attrs, children = []], opts = {}) => {
+  const sectionElementRenderer = opts.sectionElementRenderer || {};
+  const tagName = tag.toLowerCase();
+  // TODO: validate accepted tags
+  if (nodeType === MARKUP_SECTION_TYPE && sectionElementRenderer[tagName]) {
+    tag = sectionElementRenderer[tagName];
+  }
+  return React.createElement(tag, attrs, children.map(makeChild));
+};
