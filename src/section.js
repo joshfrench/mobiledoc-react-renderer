@@ -6,5 +6,3 @@ export const sectionToTree = ([type, tagName, markers]) => {
   const [tree] = markers.reduce(markersToTree, [root]);
   return tree;
 };
-
-export const mapMarkers = (mapper) => ([tag, markers]) => [tag, markers.map(mapper)];

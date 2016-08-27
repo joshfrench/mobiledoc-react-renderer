@@ -5,9 +5,8 @@ import { nodesToTags, treeToReact } from './Tree';
 
 const MobiledocRenderer = ({ mobiledoc, rootElement = 'div', sectionElementRenderer, ...props }) => {
   const { markups, sections } = mobiledoc;
-  const toMarkup = nodesToTags(markups);
   const children = sections.map(sectionToTree)
-                           .map(toMarkup)
+                           .map(nodesToTags(markups))
                            .map(treeToReact({ sectionElementRenderer }));
 
   return React.createElement(rootElement, props, children);

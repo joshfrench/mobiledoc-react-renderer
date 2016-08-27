@@ -32,8 +32,6 @@ export const nodesToTags = (markups) => {
   };
 };
 
-const makeChild = (opts = {}) => (c) => Array.isArray(c) ? treeToReact(opts)(c) : c;
-
 export const treeToReact = (opts = {}) => {
   const _sectionElementRenderer = {};
   if (opts.sectionElementRenderer) {
@@ -46,13 +44,12 @@ export const treeToReact = (opts = {}) => {
 
   return ([nodeType, tag, attrs, children = []]) => {
     let tagName = tag.toLowerCase();
-    // TODO: validate accepted tags
+
     switch (nodeType) {
     case MARKUP_SECTION_TYPE: {
       if (!isValidSectionTagName(tagName, MARKUP_SECTION_TYPE)) {
         return null;
       }
-
       if (_sectionElementRenderer[tagName]) {
         tagName = _sectionElementRenderer[tagName];
       } else if (!isMarkupSectionElementName(tagName)) {
@@ -61,11 +58,17 @@ export const treeToReact = (opts = {}) => {
       }
       break;
     }
+
     case MARKUP_MARKER_TYPE: {
+      // TODO: validate tags
       break;
     }
+
     default: return null;
     }
-    return React.createElement(tagName, attrs, children.map(makeChild(opts)));
+
+    return React.createElement(tagName, attrs, children.map((c) => {
+      return Array.isArray(c) ? treeToReact(opts)(c) : c;
+    }));
   };
 };
