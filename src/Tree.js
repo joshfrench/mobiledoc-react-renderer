@@ -1,5 +1,6 @@
 import React from 'react';
 import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from './utils/nodeTypes';
+import { isValidSectionTagName, isMarkupSectionElementName } from './utils/tagNames';
 
 const kvReduce = (obj, key, i, arr) => {
   if (i % 2 === 0) {
@@ -46,8 +47,24 @@ export const treeToReact = (opts = {}) => {
   return ([nodeType, tag, attrs, children = []]) => {
     let tagName = tag.toLowerCase();
     // TODO: validate accepted tags
-    if (nodeType === MARKUP_SECTION_TYPE && _sectionElementRenderer[tagName]) {
-      tagName = _sectionElementRenderer[tagName];
+    switch (nodeType) {
+    case MARKUP_SECTION_TYPE: {
+      if (!isValidSectionTagName(tagName, MARKUP_SECTION_TYPE)) {
+        return null;
+      }
+
+      if (_sectionElementRenderer[tagName]) {
+        tagName = _sectionElementRenderer[tagName];
+      } else if (!isMarkupSectionElementName(tagName)) {
+        attrs = { ...attrs, 'className': tagName };
+        tagName = 'div';
+      }
+      break;
+    }
+    case MARKUP_MARKER_TYPE: {
+      break;
+    }
+    default: return null;
     }
     return React.createElement(tagName, attrs, children.map(makeChild(opts)));
   };

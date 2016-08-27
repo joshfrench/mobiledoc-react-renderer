@@ -30,8 +30,18 @@ describe('treeToReact()', () => {
   });
 
   it('renders nested elements', () => {
-    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'ul', {}, [[MARKUP_MARKER_TYPE, 'li', {}, ['ohai']]]]));
-    expect(wrapper).to.have.html('<ul><li>ohai</li></ul>');
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'p', {}, [[MARKUP_MARKER_TYPE, 'span', {}, ['ohai']]]]));
+    expect(wrapper).to.have.html('<p><span>ohai</span></p>');
+  });
+
+  it('does not render unknown tags', () => {
+    const element = simpleTree([MARKUP_SECTION_TYPE, 'aside', {}]);
+    expect(element).to.be.null;
+  });
+
+  it('folds `pull-quote` to div with className', () => {
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'pull-quote', {}]));
+    expect(wrapper).to.have.html('<div class="pull-quote"></div>');
   });
 
   it('accepts a sectionElementRenderer as a simple tag', () => {
