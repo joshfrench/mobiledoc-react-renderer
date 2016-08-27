@@ -8,7 +8,7 @@ let result;
 describe('markersToTree()', () => {
   it('renders a simple marker', () => {
     const markers = [
-      [[], 0, 'No children']
+      [0, [], 0, 'No children']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql([MARKUP_SECTION_TYPE, 'P', ['No children']]);
@@ -16,7 +16,7 @@ describe('markersToTree()', () => {
 
   it('does not mutate original', () => {
     const markers = [
-      [[], 0, '.']
+      [0, [], 0, '.']
     ];
     markers.reduce(markersToTree, [tree]);
     expect(tree).to.eql([MARKUP_SECTION_TYPE, 'P', []]);
@@ -24,8 +24,8 @@ describe('markersToTree()', () => {
 
   it('renders multiple markers', () => {
     const markers = [
-      [[], 0, 'A'],
-      [[], 0, 'B']
+      [0, [], 0, 'A'],
+      [0, [], 0, 'B']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql([MARKUP_SECTION_TYPE, 'P', ['A', 'B']]);
@@ -33,8 +33,8 @@ describe('markersToTree()', () => {
 
   it('renders simple nested marker', () => {
     const markers = [
-      [[0], 0, 'Opens markup 0'],
-      [[], 1, 'Closes markup 0']
+      [0, [0], 0, 'Opens markup 0'],
+      [0, [], 1, 'Closes markup 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
@@ -44,8 +44,8 @@ describe('markersToTree()', () => {
 
   it('renders multiple nested markers', () => {
     const markers = [
-      [[0], 0, 'Opens 0'],
-      [[1], 2, 'Opens 1, Closes 1 and 0']
+      [0, [0], 0, 'Opens 0'],
+      [0, [1], 2, 'Opens 1, Closes 1 and 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(
@@ -57,9 +57,9 @@ describe('markersToTree()', () => {
 
   it('closes intermediary tags', () => {
     const markers = [
-      [[0], 0, 'Opens 0'],
-      [[1], 1, 'Opens/closes 1'],
-      [[], 1, 'Closes 0']
+      [0, [0], 0, 'Opens 0'],
+      [0, [1], 1, 'Opens/closes 1'],
+      [0, [], 1, 'Closes 0']
     ];
     [result] = markers.reduce(markersToTree, [tree]);
     expect(result).to.eql(

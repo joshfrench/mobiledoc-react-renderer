@@ -12,9 +12,9 @@ describe('<MobiledocRenderer />', () => {
       ],
       sections: [
         [1, 'p', [
-          [[], 0, 'Normal '],
-          [[1], 0, 'Linked '],
-          [[0], 2, 'and bold']
+          [0, [], 0, 'Normal '],
+          [0, [1], 0, 'Linked '],
+          [0, [0], 2, 'and bold']
         ]]
       ]
     };
@@ -28,7 +28,7 @@ describe('<MobiledocRenderer />', () => {
     const mobiledoc = {
       sections: [
         [1, 'p', [
-          [[], 0, 'ohai']
+          [0, [], 0, 'ohai']
         ]]
       ]
     };

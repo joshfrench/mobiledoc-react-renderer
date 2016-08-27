@@ -6,7 +6,7 @@ describe('sectionToTree()', () => {
   it('renders a section with its root tag', () => {
     const section = [
       1, 'p', [
-        [[], 0, 'ohai']
+        [0, [], 0, 'ohai']
       ]
     ];
 
@@ -16,7 +16,7 @@ describe('sectionToTree()', () => {
   it('renders a section with markers', () => {
     const section = [
       1, 'div', [
-        [[0], 1, 'linked']
+        [0, [0], 1, 'linked']
       ]
     ];
 

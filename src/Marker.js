@@ -4,7 +4,7 @@ const CHILDREN = 2;
 
 const descend = (tree, path) => path.reduce((tree, idx) => tree[CHILDREN][idx], tree);
 
-const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
+const addMarker = (tree, path, markerType, tagsToOpen, tagsToClose, value) => {
   tree = tree.slice(0);
   const node = descend(tree, path);
   if (tagsToOpen.length === 0) {
@@ -15,7 +15,7 @@ const addMarker = (tree, path, tagsToOpen, tagsToClose, value) => {
     const [newTag, ...rest] = tagsToOpen;
     node[CHILDREN] = [...node[CHILDREN], [MARKUP_MARKER_TYPE, newTag, []]];
     path = [...path, node[CHILDREN].length - 1];
-    return addMarker(tree, path, rest, tagsToClose, value);
+    return addMarker(tree, path, markerType, rest, tagsToClose, value);
   }
 };
 
