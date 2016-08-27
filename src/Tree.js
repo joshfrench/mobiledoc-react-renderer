@@ -34,13 +34,21 @@ export const nodesToTags = (markups) => {
 const makeChild = (opts = {}) => (c) => Array.isArray(c) ? treeToReact(opts)(c) : c;
 
 export const treeToReact = (opts = {}) => {
-  const sectionElementRenderer = opts.sectionElementRenderer || {};
-  return ([nodeType, tag, attrs, children = []]) => {
-    const tagName = tag.toLowerCase();
-    // TODO: validate accepted tags
-    if (nodeType === MARKUP_SECTION_TYPE && sectionElementRenderer[tagName]) {
-      tag = sectionElementRenderer[tagName];
+  const _sectionElementRenderer = {};
+  if (opts.sectionElementRenderer) {
+    for (const key in opts.sectionElementRenderer) {
+      if (opts.sectionElementRenderer.hasOwnProperty(key)) {
+        _sectionElementRenderer[key.toLowerCase()] = opts.sectionElementRenderer[key];
+      }
     }
-    return React.createElement(tag, attrs, children.map(makeChild(opts)));
+  }
+
+  return ([nodeType, tag, attrs, children = []]) => {
+    let tagName = tag.toLowerCase();
+    // TODO: validate accepted tags
+    if (nodeType === MARKUP_SECTION_TYPE && _sectionElementRenderer[tagName]) {
+      tagName = _sectionElementRenderer[tagName];
+    }
+    return React.createElement(tagName, attrs, children.map(makeChild(opts)));
   };
 };
