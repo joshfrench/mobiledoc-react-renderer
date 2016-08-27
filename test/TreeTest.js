@@ -22,20 +22,22 @@ describe('nodesToTags()', () => {
 
 
 describe('treeToReact()', () => {
+  const simpleTree = treeToReact();
+
   it('renders a simple element', () => {
-    const wrapper = shallow(treeToReact([MARKUP_SECTION_TYPE, 'p', {}]));
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'p', {}]));
     expect(wrapper).to.have.html('<p></p>');
   });
 
   it('renders nested elements', () => {
-    const wrapper = shallow(treeToReact([MARKUP_SECTION_TYPE, 'ul', {}, [[MARKUP_MARKER_TYPE, 'li', {}, ['ohai']]]]));
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'ul', {}, [[MARKUP_MARKER_TYPE, 'li', {}, ['ohai']]]]));
     expect(wrapper).to.have.html('<ul><li>ohai</li></ul>');
   });
 
   it('accepts a sectionElementRenderer as a simple tag', () => {
     const tree = [MARKUP_SECTION_TYPE, 'p', {}];
     const sectionElementRenderer = { 'p': 'aside' };
-    const wrapper = shallow(treeToReact(tree, { sectionElementRenderer }));
+    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
     expect(wrapper).to.have.html('<aside></aside>');
   });
 
@@ -43,14 +45,14 @@ describe('treeToReact()', () => {
     const MyComponent = () => <aside></aside>;
     const sectionElementRenderer = { 'p': MyComponent };
     const tree = [MARKUP_SECTION_TYPE, 'p', {}];
-    const wrapper = shallow(treeToReact(tree, { sectionElementRenderer }));
+    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
     expect(wrapper).to.have.html('<aside></aside>');
   });
 
   it('passes children to sectionElementRenderer', () => {
     const tree = [MARKUP_SECTION_TYPE, 'p', {}, ['ohai']];
     const sectionElementRenderer = { 'p': 'aside' };
-    const wrapper = shallow(treeToReact(tree, { sectionElementRenderer }));
+    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
     expect(wrapper).to.have.html('<aside>ohai</aside>');
   });
 });

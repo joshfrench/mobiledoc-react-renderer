@@ -23,4 +23,17 @@ describe('<MobiledocRenderer />', () => {
       '<div><p>Normal <a href="#">Linked <b>and bold</b></a></p></div>'
     );
   });
+
+  it('accepts a sectionElementRenderer option', () => {
+    const mobiledoc = {
+      sections: [
+        [1, 'p', [
+          [[], 0, 'ohai']
+        ]]
+      ]
+    };
+    const sectionElementRenderer = { 'p': 'aside' };
+    const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} sectionElementRenderer={sectionElementRenderer} />);
+    expect(wrapper).to.have.html('<div><aside>ohai</aside></div>');
+  });
 });
