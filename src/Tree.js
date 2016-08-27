@@ -32,43 +32,52 @@ export const nodesToTags = (markups) => {
   };
 };
 
-export const treeToReact = (opts = {}) => {
-  const _sectionElementRenderer = {};
-  if (opts.sectionElementRenderer) {
-    for (const key in opts.sectionElementRenderer) {
-      if (opts.sectionElementRenderer.hasOwnProperty(key)) {
-        _sectionElementRenderer[key.toLowerCase()] = opts.sectionElementRenderer[key];
+const renderMarkupSection = (sectionElementRenderer) => {
+  return ([tag, attrs]) => {
+    const _sectionElementRenderer = {};
+    if (sectionElementRenderer) {
+      for (const key in sectionElementRenderer) {
+        if (sectionElementRenderer.hasOwnProperty(key)) {
+          _sectionElementRenderer[key.toLowerCase()] = sectionElementRenderer[key];
+        }
       }
     }
-  }
+
+    tag = tag.toLowerCase();
+
+    if (!isValidSectionTagName(tag, MARKUP_SECTION_TYPE)) {
+      return null;
+    }
+
+    if (_sectionElementRenderer[tag]) {
+      tag = _sectionElementRenderer[tag];
+    } else if (!isMarkupSectionElementName(tag)) {
+      attrs = { ...attrs, 'className': tag };
+      tag = 'div';
+    }
+
+    return [tag, attrs];
+  };
+};
+
+const renderMarkupMarker = (node) => node;
+
+export const treeToReact = (opts = {}) => {
+  const renderers = {
+    [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
+    [MARKUP_MARKER_TYPE] : renderMarkupMarker
+  };
 
   return ([nodeType, tag, attrs, children = []]) => {
-    let tagName = tag.toLowerCase();
-
-    switch (nodeType) {
-    case MARKUP_SECTION_TYPE: {
-      if (!isValidSectionTagName(tagName, MARKUP_SECTION_TYPE)) {
-        return null;
+    if (renderers[nodeType]) {
+      const node = renderers[nodeType]([tag, attrs]);
+      if (node) {
+        return React.createElement(...node, children.map((c) => {
+          return Array.isArray(c) ? treeToReact(opts)(c) : c;
+        }));
       }
-      if (_sectionElementRenderer[tagName]) {
-        tagName = _sectionElementRenderer[tagName];
-      } else if (!isMarkupSectionElementName(tagName)) {
-        attrs = { ...attrs, 'className': tagName };
-        tagName = 'div';
-      }
-      break;
     }
 
-    case MARKUP_MARKER_TYPE: {
-      // TODO: validate tags
-      break;
-    }
-
-    default: return null;
-    }
-
-    return React.createElement(tagName, attrs, children.map((c) => {
-      return Array.isArray(c) ? treeToReact(opts)(c) : c;
-    }));
+    return null;
   };
 };
