@@ -1,6 +1,10 @@
 import { expect } from 'chai';
-import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from '../src/utils/nodeTypes';
-import { markersToMarkup, markersToTree } from '../src/Marker';
+import { markersToTree } from '../src/Marker';
+import {
+  MARKUP_SECTION_TYPE,
+  MARKUP_MARKER_TYPE,
+  ATOM_MARKER_TYPE
+} from '../src/utils/nodeTypes';
 
 const tree = [MARKUP_SECTION_TYPE, 'P', []];
 let result;
@@ -68,5 +72,31 @@ describe('markersToTree()', () => {
           'Opens 0',
           [MARKUP_MARKER_TYPE, 1, ['Opens/closes 1']],
           'Closes 0']]]]);
+  });
+
+  it('renders a simple atom', () => {
+    const markers = [
+      [1, [], 0, 0]
+    ];
+    [result] = markers.reduce(markersToTree, [tree]);
+    expect(result).to.eql(
+      [MARKUP_SECTION_TYPE, 'P', [
+        [ATOM_MARKER_TYPE, 0]
+      ]]
+    );
+  });
+
+  it('renders a nested atom', () => {
+    const markers = [
+      [1, [2], 1, 3]
+    ];
+    [result] = markers.reduce(markersToTree, [tree]);
+    expect(result).to.eql(
+      [MARKUP_SECTION_TYPE, 'P', [
+        [MARKUP_MARKER_TYPE, 2, [
+          [ATOM_MARKER_TYPE, 3]
+        ]]
+      ]]
+     );
   });
 });

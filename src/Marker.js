@@ -1,4 +1,8 @@
-import { MARKUP_MARKER_TYPE } from './utils/nodeTypes';
+import {
+  MARKUP_MARKER_TYPE,
+  ATOM_MARKER_TYPE,
+  MD_MARKUP_MARKER_TYPE
+} from './utils/nodeTypes';
 
 const CHILDREN = 2;
 
@@ -8,6 +12,7 @@ const addMarker = (tree, path, markerType, tagsToOpen, tagsToClose, value) => {
   tree = tree.slice(0);
   const node = descend(tree, path);
   if (tagsToOpen.length === 0) {
+    value = (markerType === MD_MARKUP_MARKER_TYPE) ? value : [ATOM_MARKER_TYPE, value];
     node[CHILDREN] = [...node[CHILDREN], value];
     path = path.slice(0, path.length - tagsToClose);
     return [tree, path];

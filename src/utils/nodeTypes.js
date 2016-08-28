@@ -7,3 +7,7 @@ export const CARD_SECTION_TYPE = 10;
 
 export const MARKUP_MARKER_TYPE = 100;
 export const ATOM_MARKER_TYPE = 101;
+
+// export native mobiledoc IDs for translation
+export const MD_MARKUP_MARKER_TYPE = 0;
+export const MD_ATOM_MARKER_TYPE = 1;
