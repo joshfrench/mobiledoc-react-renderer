@@ -1,6 +1,10 @@
 import React from 'react';
-import { MARKUP_SECTION_TYPE, MARKUP_MARKER_TYPE } from './utils/nodeTypes';
 import { isValidSectionTagName, isMarkupSectionElementName } from './utils/tagNames';
+import {
+  MARKUP_SECTION_TYPE,
+  MARKUP_MARKER_TYPE,
+  ATOM_MARKER_TYPE
+} from './utils/nodeTypes';
 
 const kvReduce = (obj, key, i, arr) => {
   if (i % 2 === 0) {
@@ -9,23 +13,27 @@ const kvReduce = (obj, key, i, arr) => {
   return obj;
 };
 
-const getTagFor = (markups, [type, tag]) => {
+const getTagFor = ([type, tag], { markups = {}, atoms = {}}) => {
   switch (type) {
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
     return [tagname, attrs.reduce(kvReduce, {})];
+  }
+  case ATOM_MARKER_TYPE: {
+    const [name, value, attrs = {}] = atoms[tag];
+    return ['span', attrs];
   }
   default:
     return [tag, {}];
   }
 };
 
-export const nodesToTags = (markups) => {
+export const nodesToTags = ({ markups, atoms }) => {
   return (node) => {
     if (Array.isArray(node)) {
       const [type, tag, children = []] = node;
-      const [tagName, attrs] = getTagFor(markups, node);
-      return [type, tagName, attrs, children.map(nodesToTags(markups))];
+      const [tagName, attrs] = getTagFor(node, { markups, atoms });
+      return [type, tagName, attrs, children.map(nodesToTags({ markups, atoms }))];
     } else {
       return node;
     }
