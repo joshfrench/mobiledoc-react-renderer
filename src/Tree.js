@@ -13,26 +13,25 @@ const kvReduce = (obj, key, i, arr) => {
   return obj;
 };
 
-const getTagFor = ([type, tag], { markups = {}, atoms = {}}) => {
+const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
   switch (type) {
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
-    return [tagname, attrs.reduce(kvReduce, {})];
+    return [type, tagname, attrs.reduce(kvReduce, {}), children];
   }
   case ATOM_MARKER_TYPE: {
     const [name, value, attrs = {}] = atoms[tag];
-    return ['span', attrs];
+    return [type, 'span', attrs, [value]];
   }
   default:
-    return [tag, {}];
+    return [type, tag, {}, children];
   }
 };
 
 export const nodesToTags = ({ markups, atoms }) => {
   return (node) => {
     if (Array.isArray(node)) {
-      const [type, tag, children = []] = node;
-      const [tagName, attrs] = getTagFor(node, { markups, atoms });
+      const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms });
       return [type, tagName, attrs, children.map(nodesToTags({ markups, atoms }))];
     } else {
       return node;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import { nodesToTags, atomsToTags, treeToReact } from '../src/Tree';
+import { nodesToTags, treeToReact } from '../src/Tree';
 import {
   MARKUP_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
@@ -19,6 +19,20 @@ describe('nodesToTags()', () => {
     expect(nodesToTags({ markups })(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'p', {}, [
         [MARKUP_MARKER_TYPE, 'a', { 'rel': 'nofollow' }, ['ohai']]
+      ]
+    ]);
+  });
+
+  it('maps atom markers to nodes', () => {
+    const atoms = [
+      ["anAtom", "@ohai", { id: 42 }]
+    ];
+    const tree = [MARKUP_SECTION_TYPE, 'p', [
+      [ATOM_MARKER_TYPE, 0]
+    ]];
+    expect(nodesToTags({ atoms })(tree)).to.eql([
+      MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, 'span', { id: 42 }, ['@ohai']]
       ]
     ]);
   });
