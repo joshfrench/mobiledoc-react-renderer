@@ -1,4 +1,5 @@
 import { MARKUP_SECTION_TYPE } from './nodeTypes';
+import { E_UNKNOWN_SECTION_TAG } from './Errors';
 
 const normalizeTagName = (tag) => tag.toLowerCase();
 
@@ -31,7 +32,7 @@ export function isValidSectionTagName(tagName, sectionType) {
   // case LIST_SECTION_TYPE:
   //   return contains(LIST_SECTION_TAG_NAMES, tagName);
   default:
-    throw new Error(`Cannot validate tagName for unknown section type "${sectionType}"`);
+    throw new Error(E_UNKNOWN_SECTION_TAG(sectionType));
   }
 }
 

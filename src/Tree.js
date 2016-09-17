@@ -2,6 +2,7 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
+import { E_NO_ATOM_AT_INDEX } from './utils/Errors';
 
 const kvReduce = (obj, key, i, arr) => {
   if (i % 2 === 0) {
@@ -13,7 +14,7 @@ const kvReduce = (obj, key, i, arr) => {
 const getAtom = (idx, atomList = []) => {
   const atomType = atomList[idx];
   if (!atomType) {
-    throw new Error(`No atom definition found at index ${idx}`);
+    throw new Error(E_NO_ATOM_AT_INDEX(idx));
   }
 
   const [name, value, payload] = atomType; // FIXME: deref payload

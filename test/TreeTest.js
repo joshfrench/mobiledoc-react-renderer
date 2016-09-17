@@ -6,6 +6,7 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';
+import { E_NO_ATOM_AT_INDEX } from '../src/utils/Errors';
 
 describe('nodesToTags()', () => {
   it('maps markup markers to nodes', () => {
@@ -46,6 +47,6 @@ describe('nodesToTags()', () => {
     ]];
 
     const noAtoms = () => nodesToTags()(tree);
-    expect(noAtoms).to.throw(`No atom definition found at index 0`);
+    expect(noAtoms).to.throw(E_NO_ATOM_AT_INDEX(0));
   });
 });

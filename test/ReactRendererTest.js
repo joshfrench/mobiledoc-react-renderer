@@ -7,6 +7,7 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';
+import { E_UNKNOWN_ATOM } from '../src/utils/Errors';
 
 describe('treeToReact()', () => {
   const simpleTree = treeToReact();
@@ -58,7 +59,7 @@ describe('treeToReact()', () => {
       const renderTree = () => simpleTree([MARKUP_SECTION_TYPE, 'p', {}, [
         [ATOM_MARKER_TYPE, "MissingAtom", {}, []]
       ]]);
-      expect(renderTree).to.throw(`Atom "MissingAtom" not found but no unknownAtomHandler was registered`);
+      expect(renderTree).to.throw(E_UNKNOWN_ATOM("MissingAtom"));
     });
   });
 

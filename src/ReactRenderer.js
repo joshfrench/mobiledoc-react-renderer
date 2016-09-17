@@ -5,6 +5,7 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
+import { E_UNKNOWN_ATOM } from './utils/Errors';
 
 const renderMarkupSection = (sectionElementRenderer) => {
   return ([tag, attrs]) => {
@@ -41,7 +42,7 @@ const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]
   } else if (unknownAtomHandler) {
     return [unknownAtomHandler, attrs]; // TODO: pass name
   } else {
-    throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
+    throw new Error(E_UNKNOWN_ATOM(name));
   }
 };
 
