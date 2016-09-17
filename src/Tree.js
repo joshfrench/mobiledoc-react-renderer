@@ -13,26 +13,47 @@ const kvReduce = (obj, key, i, arr) => {
   return obj;
 };
 
-const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
+const defaultUnknownAtomHandler = ({ env: { name } }) => {
+  throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
+};
+
+const atomByName = (name, atomTypes) => {
+  const atom = atomTypes.find((a) => a.displayName === name);
+  return atom || defaultUnknownAtomHandler;
+};
+
+const getAtom = (idx, atomList = [], atomTypes = []) => {
+  const atomType = atomList[idx];
+  if (!atomType) {
+    throw new Error(`No atom definition found at index ${idx}`);
+  }
+
+  const [name, value, payload] = atomType;
+  const atom = atomByName(name, atomTypes);
+
+  return [atom, { payload, value }];
+};
+
+const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}, { atomTypes = []}) => {
   switch (type) {
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
     return [type, tagname, attrs.reduce(kvReduce, {}), children];
   }
   case ATOM_MARKER_TYPE: {
-    const [name, value, attrs = {}] = atoms[tag];
-    return [type, 'span', attrs, [value]];
+    const [atom, attrs = {}] = getAtom(tag, atoms, atomTypes);
+    return [type, atom, attrs];
   }
   default:
     return [type, tag, {}, children];
   }
 };
 
-export const nodesToTags = ({ markups, atoms }) => {
+export const nodesToTags = ({ markups, atoms }, { atomTypes = []} = {}) => {
   return (node) => {
     if (Array.isArray(node)) {
-      const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms });
-      return [type, tagName, attrs, children.map(nodesToTags({ markups, atoms }))];
+      const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms }, { atomTypes });
+      return [type, tagName, attrs, children.map(nodesToTags({ markups, atoms }, { atomTypes }))];
     } else {
       return node;
     }
@@ -69,10 +90,13 @@ const renderMarkupSection = (sectionElementRenderer) => {
 
 const renderMarkupMarker = (node) => node;
 
+const renderAtomMarker = (node) => node;
+
 export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
-    [MARKUP_MARKER_TYPE] : renderMarkupMarker
+    [MARKUP_MARKER_TYPE] : renderMarkupMarker,
+    [ATOM_MARKER_TYPE]: renderAtomMarker
   };
 
   return ([nodeType, tag, attrs, children = []]) => {

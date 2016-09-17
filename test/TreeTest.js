@@ -24,15 +24,19 @@ describe('nodesToTags()', () => {
   });
 
   it('maps atom markers to nodes', () => {
+    const Atom = () => 'ohai';
+    Atom.displayName = 'anAtom';
+
     const atoms = [
       ["anAtom", "@ohai", { id: 42 }]
     ];
     const tree = [MARKUP_SECTION_TYPE, 'p', [
       [ATOM_MARKER_TYPE, 0]
     ]];
-    expect(nodesToTags({ atoms })(tree)).to.eql([
+
+    expect(nodesToTags({ atoms }, { atomTypes: [Atom]})(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'p', {}, [
-        [ATOM_MARKER_TYPE, 'span', { id: 42 }, ['@ohai']]
+        [ATOM_MARKER_TYPE, Atom, { payload: { id: 42 }, value: "@ohai" }, []]
       ]
     ]);
   });
