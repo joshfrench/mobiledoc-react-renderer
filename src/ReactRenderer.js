@@ -34,10 +34,12 @@ const renderMarkupSection = (sectionElementRenderer) => {
   };
 };
 
-const renderAtomMarker = (atoms = []) => ([name, attrs = {}]) => {
+const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
   const atom = atoms.find((a) => a.displayName === name);
   if (atom) {
     return [atom, attrs];
+  } else if (unknownAtomHandler) {
+    return [unknownAtomHandler, attrs]; // TODO: pass name
   } else {
     throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
   }
@@ -49,7 +51,7 @@ export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
     [MARKUP_MARKER_TYPE] : renderMarkupMarker,
-    [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms)
+    [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms, opts.unknownAtomHandler)
   };
 
   return ([nodeType, tag, attrs, children = []]) => {
