@@ -6,15 +6,6 @@ import {
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
 
-const defaultUnknownAtomHandler = ({ env: { name } }) => {
-  throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
-};
-
-const atomByName = (name, atomTypes) => {
-  const atom = atomTypes.find((a) => a.displayName === name);
-  return atom || defaultUnknownAtomHandler;
-};
-
 const renderMarkupSection = (sectionElementRenderer) => {
   return ([tag, attrs]) => {
     const _sectionElementRenderer = {};
@@ -43,15 +34,31 @@ const renderMarkupSection = (sectionElementRenderer) => {
   };
 };
 
-const renderMarkupMarker = (node) => node;
+const defaultUnknownAtomHandler = ({ env: { name } }) => {
+  throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
+};
 
-const renderAtomMarker = (node) => node;
+const atomByName = (name, atomTypes) => {
+  const atom = atomTypes.find((a) => a.displayName === name);
+  return atom || defaultUnknownAtomHandler;
+};
+
+const renderAtomMarker = (atoms = []) => ([name, attrs = {}]) => {
+  const atom = atomByName(name, atoms);
+  if (atom) {
+    return [atom, attrs];
+  } else {
+    return defaultUnknownAtomHandler;
+  }
+};
+
+const renderMarkupMarker = (node) => node;
 
 export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
     [MARKUP_MARKER_TYPE] : renderMarkupMarker,
-    [ATOM_MARKER_TYPE]: renderAtomMarker
+    [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms)
   };
 
   return ([nodeType, tag, attrs, children = []]) => {

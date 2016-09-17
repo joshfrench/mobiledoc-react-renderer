@@ -11,9 +11,6 @@ import MobiledocRenderer from '../src/MobiledocRenderer';
 describe('<MobiledocRenderer />', () => {
   it('renders a mobiledoc', () => {
     const mobiledoc = {
-      atoms: [
-        ["AnAtom", {}, "@ohai"]
-      ],
       markups: [
         ['b'],
         ['a', ['href', '#']]
