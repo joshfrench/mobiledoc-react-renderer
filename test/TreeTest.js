@@ -33,10 +33,19 @@ describe('nodesToTags()', () => {
       [ATOM_MARKER_TYPE, 0]
     ]];
 
-    expect(nodesToTags({ atoms }, { atomTypes: [Atom]})(tree)).to.eql([
+    expect(nodesToTags({ atoms })(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'p', {}, [
         [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "@ohai" }, []]
       ]
     ]);
+  });
+
+  it('raises when atom is undefined', () => {
+    const tree = [MARKUP_SECTION_TYPE, 'p', [
+      [ATOM_MARKER_TYPE, 0]
+    ]];
+
+    const noAtoms = () => nodesToTags()(tree);
+    expect(noAtoms).to.throw(`No atom definition found at index 0`);
   });
 });

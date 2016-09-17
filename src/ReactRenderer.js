@@ -34,21 +34,12 @@ const renderMarkupSection = (sectionElementRenderer) => {
   };
 };
 
-const defaultUnknownAtomHandler = ({ env: { name } }) => {
-  throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
-};
-
-const atomByName = (name, atomTypes) => {
-  const atom = atomTypes.find((a) => a.displayName === name);
-  return atom || defaultUnknownAtomHandler;
-};
-
 const renderAtomMarker = (atoms = []) => ([name, attrs = {}]) => {
-  const atom = atomByName(name, atoms);
+  const atom = atoms.find((a) => a.displayName === name);
   if (atom) {
     return [atom, attrs];
   } else {
-    return defaultUnknownAtomHandler;
+    throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered`);
   }
 };
 

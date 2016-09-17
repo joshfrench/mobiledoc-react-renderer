@@ -31,36 +31,47 @@ describe('treeToReact()', () => {
     expect(wrapper).to.have.html('<div class="pull-quote"></div>');
   });
 
-  it('maps atoms to components', () => {
-    const AnAtom = ({ value }) => <span>@{value}</span>;
-    AnAtom.displayName = "AnAtom";
+  describe('renderAtomMarker()', () => {
+    it('maps atoms to components', () => {
+      const AnAtom = ({ value }) => <span>@{value}</span>;
+      AnAtom.displayName = "AnAtom";
 
-    const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
-      [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
-    ]];
-    const wrapper = shallow(treeToReact({ atoms: [AnAtom] })(tree));
-    expect(wrapper).to.have.html('<p><span>@ohai</span></p>');
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
+      ]];
+      const wrapper = shallow(treeToReact({ atoms: [AnAtom]})(tree));
+      expect(wrapper).to.have.html('<p><span>@ohai</span></p>');
+    });
+
+    it('raises if atom cannot be found by name', () => {
+      const renderTree = () => simpleTree([MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, "MissingAtom", {}, []]
+      ]]);
+      expect(renderTree).to.throw(`Atom "MissingAtom" not found`);
+    });
   });
 
-  it('accepts a sectionElementRenderer as a simple tag', () => {
-    const tree = [MARKUP_SECTION_TYPE, 'p', {}];
-    const sectionElementRenderer = { 'p': 'aside' };
-    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
-    expect(wrapper).to.have.html('<aside></aside>');
-  });
+  describe('renderMarkupSection()', () => {
+    it('accepts a sectionElementRenderer with a simple tag', () => {
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}];
+      const sectionElementRenderer = { 'p': 'aside' };
+      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      expect(wrapper).to.have.html('<aside></aside>');
+    });
 
-  it('accepts a sectionElementRenderer as a custom Component', () => {
-    const MyComponent = () => <aside></aside>;
-    const sectionElementRenderer = { 'p': MyComponent };
-    const tree = [MARKUP_SECTION_TYPE, 'p', {}];
-    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
-    expect(wrapper).to.have.html('<aside></aside>');
-  });
+    it('accepts a sectionElementRenderer with a custom Component', () => {
+      const MyComponent = () => <aside></aside>;
+      const sectionElementRenderer = { 'p': MyComponent };
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}];
+      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      expect(wrapper).to.have.html('<aside></aside>');
+    });
 
-  it('passes children to sectionElementRenderer', () => {
-    const tree = [MARKUP_SECTION_TYPE, 'p', {}, ['ohai']];
-    const sectionElementRenderer = { 'p': 'aside' };
-    const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
-    expect(wrapper).to.have.html('<aside>ohai</aside>');
+    it('passes children to sectionElementRenderer', () => {
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}, ['ohai']];
+      const sectionElementRenderer = { 'p': 'aside' };
+      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      expect(wrapper).to.have.html('<aside>ohai</aside>');
+    });
   });
 });
