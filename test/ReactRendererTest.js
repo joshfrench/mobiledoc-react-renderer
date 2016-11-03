@@ -94,8 +94,21 @@ describe('treeToReact()', () => {
       expect(wrapper).to.have.html('<strong>ohai</strong>');
     });
 
-    it('accepts a markupElementRenderer with a simple tag');
-    it('accepts a markupElementRenderer with a custom Component');
+    it('accepts a markupElementRenderer with a simple tag', () => {
+      const tree = [MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']];
+      const markupElementRenderer = { 'strong': 'em' };
+      const wrapper = shallow(treeToReact({ markupElementRenderer })(tree));
+      expect(wrapper).to.have.html('<em>ohai</em>');
+    });
+
+    it('accepts a markupElementRenderer with a custom Component', () => {
+      const MyComponent = () => <em></em>;
+      const markupElementRenderer = { 'strong': MyComponent };
+      const tree = [MARKUP_MARKER_TYPE, 'strong', {}];
+      const wrapper = shallow(treeToReact({ markupElementRenderer })(tree));
+      expect(wrapper).to.have.html('<em></em>');
+    });
+
     it('does not render an unknown tag', () => {
       const tree = [MARKUP_MARKER_TYPE, 'span', {}, ['ohai']];
       const element = simpleTree(tree);

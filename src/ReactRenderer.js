@@ -39,16 +39,29 @@ const renderMarkupSection = (sectionElementRenderer) => {
   };
 };
 
-// TODO: validate marker type against allowed tags;
-// add markupElementRenderer
-const renderMarkupMarker = ([tag, attrs]) => {
-  tag = tag.toLowerCase();
+const renderMarkupMarker = (markupElementRenderer) => {
+  return ([tag, attrs]) => {
+    const _markupElementRenderer = {};
+    if (markupElementRenderer) {
+      for (const key in markupElementRenderer) {
+        if (markupElementRenderer.hasOwnProperty(key)) {
+          _markupElementRenderer[key.toLowerCase()] = markupElementRenderer[key];
+        }
+      }
+    }
 
-  if (!isValidMarkerType(tag)) {
-    return null;
-  }
+    tag = tag.toLowerCase();
 
-  return [tag, attrs];
+    if (!isValidMarkerType(tag)) {
+      return null;
+    }
+
+    if (_markupElementRenderer[tag]) {
+      tag = _markupElementRenderer[tag];
+    }
+
+    return [tag, attrs];
+  };
 };
 
 const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
@@ -65,7 +78,7 @@ const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]
 export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
-    [MARKUP_MARKER_TYPE] : renderMarkupMarker,
+    [MARKUP_MARKER_TYPE] : renderMarkupMarker(opts.markupElementRenderer),
     [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms, opts.unknownAtomHandler)
   };
 
