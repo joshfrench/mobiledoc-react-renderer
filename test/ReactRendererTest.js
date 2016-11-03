@@ -18,8 +18,8 @@ describe('treeToReact()', () => {
   });
 
   it('renders nested elements', () => {
-    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'p', {}, [[MARKUP_MARKER_TYPE, 'span', {}, ['ohai']]]]));
-    expect(wrapper).to.have.html('<p><span>ohai</span></p>');
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'p', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']]]]));
+    expect(wrapper).to.have.html('<p><strong>ohai</strong></p>');
   });
 
   it('does not render unknown tags', () => {
@@ -84,6 +84,22 @@ describe('treeToReact()', () => {
       const sectionElementRenderer = { 'p': 'aside' };
       const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
       expect(wrapper).to.have.html('<aside>ohai</aside>');
+    });
+  });
+
+  describe('renderMarkupMarker()', () => {
+    it('renders an allowed tag', () => {
+      const tree = [MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']];
+      const wrapper = shallow(simpleTree(tree));
+      expect(wrapper).to.have.html('<strong>ohai</strong>');
+    });
+
+    it('accepts a markupElementRenderer with a simple tag');
+    it('accepts a markupElementRenderer with a custom Component');
+    it('does not render an unknown tag', () => {
+      const tree = [MARKUP_MARKER_TYPE, 'span', {}, ['ohai']];
+      const element = simpleTree(tree);
+      expect(element).to.be.null;
     });
   });
 });

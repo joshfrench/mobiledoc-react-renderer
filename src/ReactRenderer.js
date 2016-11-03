@@ -1,5 +1,9 @@
 import React from 'react';
-import { isValidSectionTagName, isMarkupSectionElementName } from './utils/tagNames';
+import {
+  isValidSectionTagName,
+  isMarkupSectionElementName,
+  isValidMarkerType
+} from './utils/tagNames';
 import {
   MARKUP_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
@@ -35,6 +39,18 @@ const renderMarkupSection = (sectionElementRenderer) => {
   };
 };
 
+// TODO: validate marker type against allowed tags;
+// add markupElementRenderer
+const renderMarkupMarker = ([tag, attrs]) => {
+  tag = tag.toLowerCase();
+
+  if (!isValidMarkerType(tag)) {
+    return null;
+  }
+
+  return [tag, attrs];
+};
+
 const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
   const atom = atoms.find((a) => a.displayName === name);
   if (atom) {
@@ -45,8 +61,6 @@ const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]
     throw new Error(E_UNKNOWN_ATOM(name));
   }
 };
-
-const renderMarkupMarker = (node) => node;
 
 export const treeToReact = (opts = {}) => {
   const renderers = {

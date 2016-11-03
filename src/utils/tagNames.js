@@ -14,10 +14,10 @@ const MARKUP_SECTION_ELEMENT_NAMES = [
 // const LIST_SECTION_TAG_NAMES = [
 //   'ul', 'ol'
 // ].map(normalizeTagName);
-//
-// const MARKUP_TYPES = [
-//   'b', 'i', 'strong', 'em', 'a', 'u', 'sub', 'sup', 's'
-// ].map(normalizeTagName);
+
+const MARKUP_TYPES = [
+  'b', 'i', 'strong', 'em', 'a', 'u', 'sub', 'sup', 's'
+].map(normalizeTagName);
 
 function contains(array, item) {
   return array.indexOf(item) !== -1;
@@ -39,4 +39,9 @@ export function isValidSectionTagName(tagName, sectionType) {
 export function isMarkupSectionElementName(tagName) {
   tagName = normalizeTagName(tagName);
   return contains(MARKUP_SECTION_ELEMENT_NAMES, tagName);
+}
+
+export function isValidMarkerType(tagName) {
+  tagName = normalizeTagName(tagName);
+  return contains(MARKUP_TYPES, tagName);
 }
