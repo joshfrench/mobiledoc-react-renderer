@@ -6,46 +6,28 @@ import {
 } from './utils/nodeTypes';
 import { E_UNKNOWN_ATOM } from './utils/Errors';
 
-const renderMarkupSection = (sectionElementRenderer) => {
-  return ([tag, attrs]) => {
-    const _sectionElementRenderer = {};
-    if (sectionElementRenderer) {
-      for (const key in sectionElementRenderer) {
-        if (sectionElementRenderer.hasOwnProperty(key)) {
-          _sectionElementRenderer[key.toLowerCase()] = sectionElementRenderer[key];
-        }
-      }
+function makeRenderer(renderer = {}) {
+  const _renderer = {};
+  for (const key in renderer) {
+    if (renderer.hasOwnProperty(key)) {
+      _renderer[key.toLowerCase()] = renderer[key];
     }
+  }
 
+  return (tag) => {
     tag = tag.toLowerCase();
-
-    if (_sectionElementRenderer[tag]) {
-      tag = _sectionElementRenderer[tag];
-    }
-
-    return [tag, attrs];
+    return _renderer[tag] || tag;
   };
+}
+
+const renderMarkupSection = (sectionElementRenderer) => {
+  const renderer = makeRenderer(sectionElementRenderer);
+  return ([tag, attrs]) => [renderer(tag), attrs];
 };
 
 const renderMarkupMarker = (markupElementRenderer) => {
-  return ([tag, attrs]) => {
-    const _markupElementRenderer = {};
-    if (markupElementRenderer) {
-      for (const key in markupElementRenderer) {
-        if (markupElementRenderer.hasOwnProperty(key)) {
-          _markupElementRenderer[key.toLowerCase()] = markupElementRenderer[key];
-        }
-      }
-    }
-
-    tag = tag.toLowerCase();
-
-    if (_markupElementRenderer[tag]) {
-      tag = _markupElementRenderer[tag];
-    }
-
-    return [tag, attrs];
-  };
+  const renderer = makeRenderer(markupElementRenderer);
+  return ([tag, attrs]) => [renderer(tag), attrs];
 };
 
 const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
