@@ -50,7 +50,7 @@ describe('treeToReact()', () => {
         [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
       ]];
       const handler = ({ value }) => <span>!{value}</span>;
-      const wrapper = shallow(treeToReact({ unknownAtomHandler: handler})(tree));
+      const wrapper = shallow(treeToReact({ unknownAtomHandler: handler })(tree));
 
       expect(wrapper).to.have.html('<p><span>!ohai</span></p>');
     });
