@@ -22,11 +22,6 @@ describe('treeToReact()', () => {
     expect(wrapper).to.have.html('<p><strong>ohai</strong></p>');
   });
 
-  it('does not render unknown tags', () => {
-    const element = simpleTree([MARKUP_SECTION_TYPE, 'aside', {}]);
-    expect(element).to.be.null;
-  });
-
   it('folds `pull-quote` to div with className', () => {
     const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'pull-quote', {}]));
     expect(wrapper).to.have.html('<div class="pull-quote"></div>');
