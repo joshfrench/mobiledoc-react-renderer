@@ -38,13 +38,14 @@ const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
 };
 
 export const nodesToTags = ({ markups, atoms } = {}) => {
-  return (node) => {
+  const nodeToTag = (node) => {
     if (Array.isArray(node)) {
       const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms });
-      return [type, tagName, attrs, children.map(nodesToTags({ markups, atoms }))];
+      return [type, tagName, attrs, children.map(nodeToTag)];
     } else {
       return node;
     }
   };
+  return nodeToTag;
 };
 

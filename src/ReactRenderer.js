@@ -82,16 +82,18 @@ export const treeToReact = (opts = {}) => {
     [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms, opts.unknownAtomHandler)
   };
 
-  return ([nodeType, tag, attrs, children = []]) => {
+  const reactify = ([nodeType, tag, attrs, children = []]) => {
     if (renderers[nodeType]) {
       const node = renderers[nodeType]([tag, attrs]);
       if (node) {
         return React.createElement(...node, children.map((c) => {
-          return Array.isArray(c) ? treeToReact(opts)(c) : c;
+          return Array.isArray(c) ? reactify(c) : c;
         }));
       }
     }
 
     return null;
   };
+
+  return reactify;
 };
