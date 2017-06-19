@@ -108,11 +108,5 @@ describe('treeToReact()', () => {
       const wrapper = shallow(treeToReact({ markupElementRenderer })(tree));
       expect(wrapper).to.have.html('<em></em>');
     });
-
-    it('does not render an unknown tag', () => {
-      const tree = [MARKUP_MARKER_TYPE, 'span', {}, ['ohai']];
-      const element = simpleTree(tree);
-      expect(element).to.be.null;
-    });
   });
 });

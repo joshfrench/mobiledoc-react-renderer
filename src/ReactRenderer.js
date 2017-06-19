@@ -1,8 +1,7 @@
 import React from 'react';
 import {
   isValidSectionTagName,
-  isMarkupSectionElementName,
-  isValidMarkerType
+  isMarkupSectionElementName
 } from './utils/tagNames';
 import {
   MARKUP_SECTION_TYPE,
@@ -51,10 +50,6 @@ const renderMarkupMarker = (markupElementRenderer) => {
     }
 
     tag = tag.toLowerCase();
-
-    if (!isValidMarkerType(tag)) {
-      return null;
-    }
 
     if (_markupElementRenderer[tag]) {
       tag = _markupElementRenderer[tag];

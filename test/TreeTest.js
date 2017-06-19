@@ -6,7 +6,10 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';
-import { E_NO_ATOM_AT_INDEX } from '../src/utils/Errors';
+import {
+  E_NO_ATOM_AT_INDEX,
+  E_UNKNOWN_MARKER_TYPE
+} from '../src/utils/Errors';
 
 describe('nodesToTags()', () => {
   it('maps markup markers to nodes', () => {
@@ -48,5 +51,16 @@ describe('nodesToTags()', () => {
 
     const noAtoms = () => nodesToTags()(tree);
     expect(noAtoms).to.throw(E_NO_ATOM_AT_INDEX(0));
+  });
+
+  it('throws when encountering an unknown marker', () => {
+    const markups = [
+      ['not-a-tag']
+    ];
+    const tree = [MARKUP_SECTION_TYPE, 'p', [
+      [MARKUP_MARKER_TYPE, 0, ['ohai']]
+    ]];
+    const unknownMarker = () => nodesToTags({ markups })(tree);
+    expect(unknownMarker).to.throw(E_UNKNOWN_MARKER_TYPE('not-a-tag'));
   });
 });

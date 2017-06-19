@@ -2,7 +2,13 @@ import {
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
-import { E_NO_ATOM_AT_INDEX } from './utils/Errors';
+import {
+  E_NO_ATOM_AT_INDEX,
+  E_UNKNOWN_MARKER_TYPE
+} from './utils/Errors';
+import {
+  isValidMarkerType
+} from './utils/tagNames';
 
 const kvReduce = (obj, key, i, arr) => {
   if (i % 2 === 0) {
@@ -26,6 +32,9 @@ const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
   switch (type) {
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
+    if (!isValidMarkerType(tagname)) {
+      throw new Error(E_UNKNOWN_MARKER_TYPE(tagname));
+    }
     return [type, tagname, attrs.reduce(kvReduce, {}), children];
   }
   case ATOM_MARKER_TYPE: {
