@@ -35,7 +35,7 @@ const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]
   if (atom) {
     return [atom, attrs];
   } else if (unknownAtomHandler) {
-    return [unknownAtomHandler, attrs]; // TODO: pass name
+    return [unknownAtomHandler, { name: name, ...attrs }];
   } else {
     throw new Error(E_UNKNOWN_ATOM(name));
   }

@@ -39,10 +39,10 @@ describe('treeToReact()', () => {
       const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
         [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
       ]];
-      const handler = ({ value }) => <span>!{value}</span>;
+      const handler = ({ name, value }) => <span>{`${name}: ${value}`}</span>;
       const wrapper = shallow(treeToReact({ unknownAtomHandler: handler })(tree));
 
-      expect(wrapper).to.have.html('<p><span>!ohai</span></p>');
+      expect(wrapper).to.have.html('<p><span>AnAtom: ohai</span></p>');
     });
 
     it('raises if atom cannot be found and no handler is supplied', () => {
