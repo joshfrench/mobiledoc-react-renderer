@@ -1,8 +1,5 @@
 import React from 'react';
 import {
-  isMarkupSectionElementName
-} from './utils/tagNames';
-import {
   MARKUP_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
@@ -24,9 +21,6 @@ const renderMarkupSection = (sectionElementRenderer) => {
 
     if (_sectionElementRenderer[tag]) {
       tag = _sectionElementRenderer[tag];
-    } else if (!isMarkupSectionElementName(tag)) {
-      attrs = { ...attrs, 'className': tag };
-      tag = 'div';
     }
 
     return [tag, attrs];

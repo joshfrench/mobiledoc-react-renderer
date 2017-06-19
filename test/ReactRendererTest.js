@@ -22,11 +22,6 @@ describe('treeToReact()', () => {
     expect(wrapper).to.have.html('<p><strong>ohai</strong></p>');
   });
 
-  it('folds `pull-quote` to div with className', () => {
-    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'pull-quote', {}]));
-    expect(wrapper).to.have.html('<div class="pull-quote"></div>');
-  });
-
   describe('renderAtomMarker()', () => {
     it('maps atoms to components', () => {
       const AnAtom = ({ value }) => <span>@{value}</span>;

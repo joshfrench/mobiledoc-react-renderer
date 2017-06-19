@@ -1,4 +1,5 @@
 import {
+  MARKUP_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
@@ -7,7 +8,8 @@ import {
   E_UNKNOWN_MARKER_TYPE
 } from './utils/Errors';
 import {
-  isValidMarkerType
+  isValidMarkerType,
+  isMarkupSectionElementName
 } from './utils/tagNames';
 
 const kvReduce = (obj, key, i, arr) => {
@@ -30,6 +32,14 @@ const getAtom = (idx, atomList = []) => {
 
 const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
   switch (type) {
+  case MARKUP_SECTION_TYPE: {
+    const attrs = {};
+    if (!isMarkupSectionElementName(tag)) {
+      attrs['class'] = tag;
+      tag = 'div';
+    }
+    return [type, tag, attrs, children];
+  }
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
     if (!isValidMarkerType(tagname)) {

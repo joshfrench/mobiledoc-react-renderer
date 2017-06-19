@@ -63,4 +63,11 @@ describe('nodesToTags()', () => {
     const unknownMarker = () => nodesToTags({ markups })(tree);
     expect(unknownMarker).to.throw(E_UNKNOWN_MARKER_TYPE('not-a-tag'));
   });
+
+  it('folds `pull-quote` section to div.pull-quote', () => {
+    const tree = [MARKUP_SECTION_TYPE, 'pull-quote', ['ohai']];
+    expect(nodesToTags()(tree)).to.eql([
+      MARKUP_SECTION_TYPE, 'div', { class: 'pull-quote' }, ["ohai"]
+    ]);
+  });
 });
