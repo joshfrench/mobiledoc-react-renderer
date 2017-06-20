@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import { treeToReact } from '../src/ReactRenderer';
 import {
   MARKUP_SECTION_TYPE,
-  LIST_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';

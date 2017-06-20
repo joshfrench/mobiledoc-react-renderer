@@ -32,41 +32,43 @@ const getAtom = (idx, atomList = []) => {
   return [name, { payload, value }];
 };
 
-const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
-  switch (type) {
-  case MARKUP_SECTION_TYPE: {
-    const attrs = {};
-    if (!isMarkupSectionElementName(tag)) {
-      attrs['class'] = tag;
-      tag = 'div';
+const dispatcher = ({ markups = {}, atoms = {}}) => {
+  return ([type, tag, children]) => {
+    switch (type) {
+    case MARKUP_SECTION_TYPE: {
+      const attrs = {};
+      if (!isMarkupSectionElementName(tag)) {
+        attrs['class'] = tag;
+        tag = 'div';
+      }
+      return [type, tag, attrs, children];
     }
-    return [type, tag, attrs, children];
-  }
-  case LIST_SECTION_TYPE: {
-    const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
-    return [type, tag, {}, items];
-  }
-  case MARKUP_MARKER_TYPE: {
-    const [tagname, attrs = []] = markups[tag];
-    if (!isValidMarkerType(tagname)) {
-      throw new Error(E_UNKNOWN_MARKER_TYPE(tagname));
+    case LIST_SECTION_TYPE: {
+      const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
+      return [type, tag, {}, items];
     }
-    return [type, tagname, attrs.reduce(kvReduce, {}), children];
-  }
-  case ATOM_MARKER_TYPE: {
-    const [atom, attrs = {}] = getAtom(tag, atoms);
-    return [type, atom, attrs];
-  }
-  default:
-    return [type, tag, {}, children];
-  }
+    case MARKUP_MARKER_TYPE: {
+      const [tagname, attrs = []] = markups[tag];
+      if (!isValidMarkerType(tagname)) {
+        throw new Error(E_UNKNOWN_MARKER_TYPE(tagname));
+      }
+      return [type, tagname, attrs.reduce(kvReduce, {}), children];
+    }
+    case ATOM_MARKER_TYPE: {
+      const [atom, attrs = {}] = getAtom(tag, atoms);
+      return [type, atom, attrs];
+    }
+    default:
+      return [type, tag, {}, children];
+    }
+  };
 };
 
 export const nodesToTags = ({ markups, atoms } = {}) => {
+  const expandMarkers = dispatcher({ markups, atoms });
   const nodeToTag = (node) => {
     if (Array.isArray(node)) {
-      // TODO: don' recreate function for each node
-      const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms });
+      const [type, tagName, attrs, children = []] = expandMarkers(node);
       return [type, tagName, attrs, children.map(nodeToTag)];
     } else {
       return node;

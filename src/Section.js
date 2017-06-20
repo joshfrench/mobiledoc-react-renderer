@@ -1,6 +1,6 @@
 import { markersToTree } from './Marker';
 import { isValidSectionTagName } from './utils/tagNames';
-import { E_UNALLOWED_SECTION_TAG } from './utils/errors';
+import { E_UNALLOWED_SECTION_TAG } from './utils/Errors';
 
 export const sectionToTree = ([type, tagName, markers]) => {
   if (!isValidSectionTagName(tagName, type)) {

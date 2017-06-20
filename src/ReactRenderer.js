@@ -1,12 +1,14 @@
 import React from 'react';
 import {
   MARKUP_SECTION_TYPE,
+  LIST_SECTION_TYPE,
+  LIST_ITEM_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
 import { E_UNKNOWN_ATOM } from './utils/Errors';
 
-function makeRenderer(renderer = {}) {
+const tagRenderer = (renderer = {}) => {
   const _renderer = {};
   for (const key in renderer) {
     if (renderer.hasOwnProperty(key)) {
@@ -14,20 +16,12 @@ function makeRenderer(renderer = {}) {
     }
   }
 
-  return (tag) => {
+  const renderTag = (tag) => {
     tag = tag.toLowerCase();
     return _renderer[tag] || tag;
   };
-}
 
-const renderMarkupSection = (sectionElementRenderer) => {
-  const renderer = makeRenderer(sectionElementRenderer);
-  return ([tag, attrs]) => [renderer(tag), attrs];
-};
-
-const renderMarkupMarker = (markupElementRenderer) => {
-  const renderer = makeRenderer(markupElementRenderer);
-  return ([tag, attrs]) => [renderer(tag), attrs];
+  return ([tag, attrs]) => [renderTag(tag), attrs];
 };
 
 const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
@@ -42,9 +36,14 @@ const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]
 };
 
 export const treeToReact = (opts = {}) => {
+  const sectionRenderer = tagRenderer(opts.sectionElementRenderer);
+  const elementRenderer = tagRenderer(opts.markupElementRenderer);
+
   const renderers = {
-    [MARKUP_SECTION_TYPE] : renderMarkupSection(opts.sectionElementRenderer),
-    [MARKUP_MARKER_TYPE] : renderMarkupMarker(opts.markupElementRenderer),
+    [MARKUP_SECTION_TYPE] : sectionRenderer,
+    [LIST_SECTION_TYPE] : sectionRenderer,
+    [MARKUP_MARKER_TYPE] : elementRenderer,
+    [LIST_ITEM_TYPE]: sectionRenderer,
     [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms, opts.unknownAtomHandler)
   };
 
