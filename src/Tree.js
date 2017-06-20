@@ -44,8 +44,6 @@ const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
   }
   case LIST_SECTION_TYPE: {
     const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
-    console.log('children ', JSON.stringify(items));
-    // console.log(JSON.stringify(children));
     return [type, tag, {}, items];
   }
   case MARKUP_MARKER_TYPE: {
@@ -67,6 +65,7 @@ const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
 export const nodesToTags = ({ markups, atoms } = {}) => {
   const nodeToTag = (node) => {
     if (Array.isArray(node)) {
+      // TODO: don' recreate function for each node
       const [type, tagName, attrs, children = []] = expandMarkers(node, { markups, atoms });
       return [type, tagName, attrs, children.map(nodeToTag)];
     } else {

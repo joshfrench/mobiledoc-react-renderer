@@ -73,23 +73,18 @@ describe('nodesToTags()', () => {
   });
 
   it('maps list section children to list items', () => {
-    // const tree = [LIST_SECTION_TYPE, 'ul', [[MARKUP_MARKER_TYPE, 0, ['foo']], 'bar']];
-    const tree = [LIST_SECTION_TYPE, 'ul', ['ohai']];
     const markups = [
       ['strong']
     ];
-    const nodes = nodesToTags({ markups })(tree);
-    // let expected = [
-    //   LIST_SECTION_TYPE, 'ul', {}, [
-    //     [MARKUP_MARKER_TYPE, 'li', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, 'foo']]],
-    //     [MARKUP_MARKER_TYPE, 'li', {}, ['bar']]
-    //   ]
-    // ];
-    let expected = [
+    const tree = [LIST_SECTION_TYPE, 'ul', [
+      [MARKUP_MARKER_TYPE, 0, ['foo']],
+      'bar'
+    ]];
+    expect(nodesToTags({ markups })(tree)).to.eql([
       LIST_SECTION_TYPE, 'ul', {}, [
-        [LIST_ITEM_TYPE, 'li', {}, ['ohai']]
+        [LIST_ITEM_TYPE, 'li', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, ['foo']]]],
+        [LIST_ITEM_TYPE, 'li', {}, ['bar']]
       ]
-    ];
-    expect(nodes).to.eql(expected);
+    ]);
   });
 });
