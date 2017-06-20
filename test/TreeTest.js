@@ -1,8 +1,9 @@
-import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { nodesToTags } from '../src/Tree';
 import {
   MARKUP_SECTION_TYPE,
+  LIST_SECTION_TYPE,
+  LIST_ITEM_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';
@@ -69,5 +70,26 @@ describe('nodesToTags()', () => {
     expect(nodesToTags()(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'div', { class: 'pull-quote' }, ["ohai"]
     ]);
+  });
+
+  it('maps list section children to list items', () => {
+    // const tree = [LIST_SECTION_TYPE, 'ul', [[MARKUP_MARKER_TYPE, 0, ['foo']], 'bar']];
+    const tree = [LIST_SECTION_TYPE, 'ul', ['ohai']];
+    const markups = [
+      ['strong']
+    ];
+    const nodes = nodesToTags({ markups })(tree);
+    // let expected = [
+    //   LIST_SECTION_TYPE, 'ul', {}, [
+    //     [MARKUP_MARKER_TYPE, 'li', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, 'foo']]],
+    //     [MARKUP_MARKER_TYPE, 'li', {}, ['bar']]
+    //   ]
+    // ];
+    let expected = [
+      LIST_SECTION_TYPE, 'ul', {}, [
+        [LIST_ITEM_TYPE, 'li', {}, ['ohai']]
+      ]
+    ];
+    expect(nodes).to.eql(expected);
   });
 });

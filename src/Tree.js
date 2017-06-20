@@ -1,5 +1,7 @@
 import {
   MARKUP_SECTION_TYPE,
+  LIST_SECTION_TYPE,
+  LIST_ITEM_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from './utils/nodeTypes';
@@ -39,6 +41,12 @@ const expandMarkers = ([type, tag, children], { markups = {}, atoms = {}}) => {
       tag = 'div';
     }
     return [type, tag, attrs, children];
+  }
+  case LIST_SECTION_TYPE: {
+    const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
+    console.log('children ', JSON.stringify(items));
+    // console.log(JSON.stringify(children));
+    return [type, tag, {}, items];
   }
   case MARKUP_MARKER_TYPE: {
     const [tagname, attrs = []] = markups[tag];
