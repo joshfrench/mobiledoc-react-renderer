@@ -54,9 +54,14 @@ export const treeToReact = (opts = {}) => {
 
   const reactify = ([nodeType, tag, attrs, children = []]) => {
     if (renderers[nodeType]) {
-      const node = renderers[nodeType]([tag, attrs]);
-      if (node) {
-        return React.createElement(...node, children.map((c) => {
+      const [nodeTag, nodeAttrs] = renderers[nodeType]([tag, attrs]);
+      if (nodeTag) {
+        if (nodeAttrs.class) {
+          const className = nodeAttrs.class;
+          nodeAttrs.className = className;
+          delete nodeAttrs.class;
+        }
+        return React.createElement(nodeTag, nodeAttrs, children.map((c) => {
           return Array.isArray(c) ? reactify(c) : c;
         }));
       }

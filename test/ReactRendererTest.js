@@ -26,6 +26,11 @@ describe('treeToReact()', () => {
     expect(wrapper).to.have.html('<p><strong>ohai</strong></p>');
   });
 
+  it('maps attrs to React-safe versions', () => {
+    const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'div', { class: 'pull-quote' }, ['ohai']]));
+    expect(wrapper).to.have.html('<div class="pull-quote">ohai</div>');
+  });
+
   describe('renderAtomMarker()', () => {
     it('maps atoms to components', () => {
       const AnAtom = ({ value }) => <span>@{value}</span>;
