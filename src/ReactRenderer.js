@@ -39,6 +39,21 @@ const componentRenderer = (components = [], unknownComponentHandler, error) => (
   }
 };
 
+const reactMap = {
+  "class": "className"
+};
+
+const reactAttrs = (attrs = {}) => {
+  attrs = { ...attrs };
+  for (const key in reactMap) {
+    if (attrs[key]) {
+      attrs[reactMap[key]] = attrs[key];
+      delete attrs[key];
+    }
+  }
+  return attrs;
+};
+
 export const treeToReact = (opts = {}) => {
   const sectionRenderer = tagRenderer(opts.sectionElementRenderer);
   const elementRenderer = tagRenderer(opts.markupElementRenderer);
@@ -56,12 +71,7 @@ export const treeToReact = (opts = {}) => {
     if (renderers[nodeType]) {
       const [nodeTag, nodeAttrs] = renderers[nodeType]([tag, attrs]);
       if (nodeTag) {
-        if (nodeAttrs.class) {
-          const className = nodeAttrs.class;
-          nodeAttrs.className = className;
-          delete nodeAttrs.class;
-        }
-        return React.createElement(nodeTag, nodeAttrs, children.map((c) => {
+        return React.createElement(nodeTag, reactAttrs(nodeAttrs), children.map((c) => {
           return Array.isArray(c) ? reactify(c) : c;
         }));
       }
