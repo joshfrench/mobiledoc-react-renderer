@@ -3,11 +3,15 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { treeToReact } from '../src/ReactRenderer';
 import {
+  CARD_SECTION_TYPE,
   MARKUP_SECTION_TYPE,
   MARKUP_MARKER_TYPE,
   ATOM_MARKER_TYPE
 } from '../src/utils/nodeTypes';
-import { E_UNKNOWN_ATOM } from '../src/utils/Errors';
+import {
+  E_UNKNOWN_CARD,
+  E_UNKNOWN_ATOM
+} from '../src/utils/Errors';
 
 describe('treeToReact()', () => {
   const simpleTree = treeToReact();
@@ -39,8 +43,8 @@ describe('treeToReact()', () => {
       const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
         [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
       ]];
-      const handler = ({ name, value }) => <span>{`${name}: ${value}`}</span>;
-      const wrapper = shallow(treeToReact({ unknownAtomHandler: handler })(tree));
+      const unknownAtomHandler = ({ name, value }) => <span>{`${name}: ${value}`}</span>;
+      const wrapper = shallow(treeToReact({ unknownAtomHandler })(tree));
 
       expect(wrapper).to.have.html('<p><span>AnAtom: ohai</span></p>');
     });
@@ -50,6 +54,30 @@ describe('treeToReact()', () => {
         [ATOM_MARKER_TYPE, "MissingAtom", {}, []]
       ]]);
       expect(renderTree).to.throw(E_UNKNOWN_ATOM("MissingAtom"));
+    });
+  });
+
+  describe('renderCardSection', () => {
+    it('maps cards to components', () => {
+      const Card = ({ payload: { name } }) => <div>Hello {name}</div>;
+      Card.displayName = 'aCard';
+
+      const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []];
+      const wrapper = shallow(treeToReact({ cards: [Card]})(tree));
+      expect(wrapper).to.have.html('<div>Hello Hodor</div>');
+    });
+
+    it('passes unknown cards to unknownCardHandler', () => {
+      const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}];
+      const unknownCardHandler = ({ name, payload }) => <div>{`${name}: ${payload.name}`}</div>;
+
+      const wrapper = shallow(treeToReact({ unknownCardHandler })(tree));
+      expect(wrapper).to.have.html('<div>aCard: Hodor</div>');
+    });
+
+    it('raises if card cannot be found and no handler is supplied', () => {
+      const renderTree = () => simpleTree([CARD_SECTION_TYPE, 'MissingCard', []]);
+      expect(renderTree).to.throw(E_UNKNOWN_CARD('MissingCard'));
     });
   });
 

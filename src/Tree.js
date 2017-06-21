@@ -1,4 +1,5 @@
 import {
+  CARD_SECTION_TYPE,
   MARKUP_SECTION_TYPE,
   LIST_SECTION_TYPE,
   LIST_ITEM_TYPE,
@@ -7,6 +8,7 @@ import {
 } from './utils/nodeTypes';
 import {
   E_NO_ATOM_AT_INDEX,
+  E_NO_CARD_AT_INDEX,
   E_UNKNOWN_MARKER_TYPE
 } from './utils/Errors';
 import {
@@ -26,13 +28,20 @@ const getAtom = (idx, atomList = []) => {
   if (!atomType) {
     throw new Error(E_NO_ATOM_AT_INDEX(idx));
   }
-
-  const [name, value, payload] = atomType; // FIXME: deref payload
-
-  return [name, { payload, value }];
+  const [name, value, payload] = atomType;
+  return [name, { value, payload: { ...payload }}]; // deref payload
 };
 
-const dispatcher = ({ markups = {}, atoms = {}}) => {
+const getCard = (idx, cardList = []) => {
+  const cardType = cardList[idx];
+  if (!cardType) {
+    throw new Error(E_NO_CARD_AT_INDEX(idx));
+  }
+  const [name, payload] = cardType;
+  return [name, { payload: { ...payload }}]; // deref payload
+};
+
+const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
   return ([type, tag, children]) => {
     switch (type) {
     case MARKUP_SECTION_TYPE: {
@@ -42,6 +51,10 @@ const dispatcher = ({ markups = {}, atoms = {}}) => {
         tag = 'div';
       }
       return [type, tag, attrs, children];
+    }
+    case CARD_SECTION_TYPE: {
+      const [card, payload = {}] = getCard(tag, cards);
+      return [type, card, payload];
     }
     case LIST_SECTION_TYPE: {
       const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
@@ -64,8 +77,8 @@ const dispatcher = ({ markups = {}, atoms = {}}) => {
   };
 };
 
-export const nodesToTags = ({ markups, atoms } = {}) => {
-  const expandMarkers = dispatcher({ markups, atoms });
+export const nodesToTags = ({ markups, cards, atoms } = {}) => {
+  const expandMarkers = dispatcher({ markups, cards, atoms });
   const nodeToTag = (node) => {
     if (Array.isArray(node)) {
       const [type, tagName, attrs, children = []] = expandMarkers(node);

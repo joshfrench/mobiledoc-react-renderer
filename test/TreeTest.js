@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { nodesToTags } from '../src/Tree';
 import {
+  CARD_SECTION_TYPE,
   MARKUP_SECTION_TYPE,
   LIST_SECTION_TYPE,
   LIST_ITEM_TYPE,
@@ -24,6 +25,18 @@ describe('nodesToTags()', () => {
       MARKUP_SECTION_TYPE, 'p', {}, [
         [MARKUP_MARKER_TYPE, 'a', { 'rel': 'nofollow' }, ['ohai']]
       ]
+    ]);
+  });
+
+  it('maps card sections to named nodes', () => {
+    const Card = ({ name }) => `Hello ${name}`;
+    Card.displayName = 'aCard';
+
+    const cards = [['aCard', { name: 'Hodor' }]];
+    const tree = [CARD_SECTION_TYPE, 0];
+
+    expect(nodesToTags({ cards })(tree)).to.eql([
+      CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []
     ]);
   });
 

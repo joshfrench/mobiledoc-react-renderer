@@ -1,6 +1,7 @@
 import {
   MARKUP_SECTION_TYPE,
-  LIST_SECTION_TYPE
+  LIST_SECTION_TYPE,
+  CARD_SECTION_TYPE
 } from './nodeTypes';
 import { E_UNKNOWN_SECTION_TAG } from './Errors';
 
@@ -34,6 +35,8 @@ export function isValidSectionTagName(tagName, sectionType) {
     return contains(MARKUP_SECTION_TAG_NAMES, tagName);
   case LIST_SECTION_TYPE:
     return contains(LIST_SECTION_TAG_NAMES, tagName);
+  case CARD_SECTION_TYPE:
+    return true;
   default:
     throw new Error(E_UNKNOWN_SECTION_TAG(sectionType));
   }
