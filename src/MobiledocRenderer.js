@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { sectionToTree } from './Section';
 import { nodesToTags } from './Tree';
 import { treeToReact } from './ReactRenderer';
 
-// TODO: add cards, markup renderer
-const MobiledocRenderer = ({ mobiledoc, rootElement = 'div', sectionElementRenderer, atoms, ...props }) => {
+const MobiledocRenderer = ({ mobiledoc = {}, rootElement = 'div', sectionElementRenderer, markupElementRenderer, atoms, cards, ...props }) => {
+  mobiledoc.sections = mobiledoc.sections || [];
   const children = mobiledoc.sections.map(sectionToTree)
                                      .map(nodesToTags(mobiledoc))
-                                     .map(treeToReact({ sectionElementRenderer, atoms }));
+                                     .map(treeToReact({ sectionElementRenderer, markupElementRenderer, cards, atoms }));
 
   return React.createElement(rootElement, props, children);
 };

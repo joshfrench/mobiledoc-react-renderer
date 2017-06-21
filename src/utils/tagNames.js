@@ -28,13 +28,11 @@ function contains(array, item) {
 }
 
 export function isValidSectionTagName(tagName, sectionType) {
-  tagName = normalizeTagName(tagName);
-
   switch (sectionType) {
   case MARKUP_SECTION_TYPE:
-    return contains(MARKUP_SECTION_TAG_NAMES, tagName);
+    return contains(MARKUP_SECTION_TAG_NAMES, normalizeTagName(tagName));
   case LIST_SECTION_TYPE:
-    return contains(LIST_SECTION_TAG_NAMES, tagName);
+    return contains(LIST_SECTION_TAG_NAMES, normalizeTagName(tagName));
   case CARD_SECTION_TYPE:
     return true;
   default:

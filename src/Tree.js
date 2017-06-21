@@ -38,7 +38,7 @@ const getCard = (idx, cardList = []) => {
     throw new Error(E_NO_CARD_AT_INDEX(idx));
   }
   const [name, payload] = cardType;
-  return [name, { payload: { ...payload }}]; // deref payload
+  return [name, { payload: { ...payload }}]; // deref payload (no value)
 };
 
 const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
@@ -89,4 +89,3 @@ export const nodesToTags = ({ markups, cards, atoms } = {}) => {
   };
   return nodeToTag;
 };
-

@@ -46,10 +46,10 @@ export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : sectionRenderer,
     [LIST_SECTION_TYPE] : sectionRenderer,
-    [CARD_SECTION_TYPE] : componentRenderer(opts.cards, opts.unknownCardHandler, E_UNKNOWN_CARD),
-    [MARKUP_MARKER_TYPE] : elementRenderer,
     [LIST_ITEM_TYPE]: sectionRenderer,
-    [ATOM_MARKER_TYPE]: componentRenderer(opts.atoms, opts.unknownAtomHandler, E_UNKNOWN_ATOM)
+    [CARD_SECTION_TYPE] : componentRenderer(opts.cards, opts.unknownCardHandler, E_UNKNOWN_CARD),
+    [ATOM_MARKER_TYPE]: componentRenderer(opts.atoms, opts.unknownAtomHandler, E_UNKNOWN_ATOM),
+    [MARKUP_MARKER_TYPE] : elementRenderer
   };
 
   const reactify = ([nodeType, tag, attrs, children = []]) => {

@@ -3,6 +3,8 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import {
   MARKUP_SECTION_TYPE,
+  CARD_SECTION_TYPE,
+  LIST_SECTION_TYPE,
   MD_ATOM_MARKER_TYPE,
   MD_MARKUP_MARKER_TYPE
 } from '../src/utils/nodeTypes';
@@ -29,6 +31,13 @@ describe('<MobiledocRenderer />', () => {
     );
   });
 
+  it('passes arbitrary props to root element', () => {
+    const wrapper = shallow(<MobiledocRenderer className="mobiledoc" />);
+    expect(wrapper).to.have.html(
+      '<div class="mobiledoc"></div>'
+    );
+  });
+
   it('accepts a sectionElementRenderer option', () => {
     const mobiledoc = {
       sections: [
@@ -42,13 +51,29 @@ describe('<MobiledocRenderer />', () => {
     expect(wrapper).to.have.html('<div><aside>ohai</aside></div>');
   });
 
+  it('accepts a markupElementRenderer', () => {
+    const mobiledoc = {
+      markups: [
+        ['strong']
+      ],
+      sections: [
+        [MARKUP_SECTION_TYPE, 'p', [
+          [MD_MARKUP_MARKER_TYPE, [0], 1, 'ohai']
+        ]]
+      ]
+    };
+    const markupElementRenderer = { 'strong': 'em' };
+    const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} markupElementRenderer={markupElementRenderer} />);
+    expect(wrapper).to.have.html('<div><p><em>ohai</em></p></div>');
+  });
+
   it('renders an atom', () => {
     const AnAtom = ({ value }) => <span>@{value}</span>;
     AnAtom.displayName = 'AnAtom';
 
     const mobiledoc = {
       atoms: [
-        ["AnAtom", "ohai", {id: 42}]
+        ["AnAtom", "ohai", { id: 42 }]
       ],
       sections: [
         [MARKUP_SECTION_TYPE, 'p', [
@@ -59,6 +84,39 @@ describe('<MobiledocRenderer />', () => {
     const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} atoms={[AnAtom]} />);
     expect(wrapper).to.have.html(
       '<div><p><span>@ohai</span></p></div>'
+    );
+  });
+
+  it('renders a card', () => {
+    const Card = ({ payload: { name }}) => <figure>Hello {name}</figure>;
+    Card.displayName = 'Card';
+
+    const mobiledoc = {
+      cards: [
+        ['Card', { name: 'Hodor' }]
+      ],
+      sections: [
+        [CARD_SECTION_TYPE, 0]
+      ]
+    };
+    const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} cards={[Card]} />);
+    expect(wrapper).to.have.html(
+      '<div><figure>Hello Hodor</figure></div>'
+    );
+  });
+
+  it('renders a list', () => {
+    const mobiledoc = {
+      sections: [
+        [LIST_SECTION_TYPE, 'ul', [
+          [MD_MARKUP_MARKER_TYPE, [], 0, 'foo'],
+          [MD_MARKUP_MARKER_TYPE, [], 0, 'bar']
+        ]]
+      ]
+    };
+    const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} />);
+    expect(wrapper).to.have.html(
+      '<div><ul><li>foo</li><li>bar</li></ul></div>'
     );
   });
 });
