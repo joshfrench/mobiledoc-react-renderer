@@ -28,25 +28,14 @@ const tagRenderer = (renderer = {}) => {
   return ([tag, attrs]) => [renderTag(tag), attrs];
 };
 
-const renderAtomMarker = (atoms = [], unknownAtomHandler) => ([name, attrs = {}]) => {
-  const atom = atoms.find((a) => a.displayName === name);
-  if (atom) {
-    return [atom, attrs];
-  } else if (unknownAtomHandler) {
-    return [unknownAtomHandler, { name, ...attrs }];
+const componentRenderer = (components = [], unknownComponentHandler, error) => ([name, attrs = {}]) => {
+  const component = components.find((c) => c.displayName === name);
+  if (component) {
+    return [component, attrs];
+  } else if (unknownComponentHandler) {
+    return [unknownComponentHandler, { name, ...attrs }];
   } else {
-    throw new Error(E_UNKNOWN_ATOM(name));
-  }
-};
-
-const renderCardSection = (cards = [], unknownCardHandler) => ([name, attrs = {}]) => {
-  const card = cards.find((c) => c.displayName === name);
-  if (card) {
-    return [card, attrs];
-  } else if (unknownCardHandler) {
-    return [unknownCardHandler, { name, ...attrs }];
-  } else {
-    throw new Error(E_UNKNOWN_CARD(name));
+    throw new Error(error(name));
   }
 };
 
@@ -57,10 +46,10 @@ export const treeToReact = (opts = {}) => {
   const renderers = {
     [MARKUP_SECTION_TYPE] : sectionRenderer,
     [LIST_SECTION_TYPE] : sectionRenderer,
-    [CARD_SECTION_TYPE] : renderCardSection(opts.cards, opts.unknownCardHandler),
+    [CARD_SECTION_TYPE] : componentRenderer(opts.cards, opts.unknownCardHandler, E_UNKNOWN_CARD),
     [MARKUP_MARKER_TYPE] : elementRenderer,
     [LIST_ITEM_TYPE]: sectionRenderer,
-    [ATOM_MARKER_TYPE]: renderAtomMarker(opts.atoms, opts.unknownAtomHandler)
+    [ATOM_MARKER_TYPE]: componentRenderer(opts.atoms, opts.unknownAtomHandler, E_UNKNOWN_ATOM)
   };
 
   const reactify = ([nodeType, tag, attrs, children = []]) => {
