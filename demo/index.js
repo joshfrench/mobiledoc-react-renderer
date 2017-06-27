@@ -2,23 +2,171 @@ import MobiledocRenderer from '../src/MobiledocRenderer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const ix = (src) => 'http:' + src.replace('i.upworthy.com', 'upworthy-staging.imgix.net');
+
+const unknownCardHandler = ({ name, payload }) => <div>
+  <img src={ix(payload.src)} />
+  <MobiledocRenderer mobiledoc={payload.mobiledoc} />
+</div>;
+
 const mobiledoc = {
-  markups: [
-    ['b'],
-    ['a', ['href', '#']]
-  ],
-  sections: [
-    [1, 'p', [
-      [0, [], 0, 'Normal '],
-      [0, [1], 0, 'Linked '],
-      [0, [0], 2, 'and bold']
-    ]],
-    [3, 'ul', [
-      [0, [], 0, 'One'],
-      [0, [0], 1, 'Two']
-    ]]
-  ]
+"version":"0.3.0",
+ "atoms":[],
+ "cards":
+  [["ImageCard",
+    {"mobiledoc":
+      {"version":"0.3.0",
+       "atoms":[],
+       "cards":[],
+       "markups":[],
+       "sections":
+        [[1,
+          "p",
+          [[0,
+            [],
+            0,
+            "Peter Ter, center, teaching Azerbaijani students how to throw an American football. All images from Peter Ter, used with permission."]]]]},
+     "src":"//i.upworthy.com/nugget/58352251a81f09001e00007e/attachments/2015-4b21e5fabd4a9f0a857da15f9b48e535.JPG"}],
+   ["ImageCard",
+    {"mobiledoc":
+      {"version":"0.3.0",
+       "atoms":[],
+       "cards":[],
+       "markups":[],
+       "sections":[[1, "p", [[0, [], 0, "Peter learns to play mah–jongg from some seventh-grade students he tutored in Chonqqing, China. "]]]]},
+     "src":"//i.upworthy.com/nugget/583521c62855e50019000084/attachments/DSC00463-d3a1faeac2ae3aa8cc4b6317598524d5.JPG"}],
+   ["ImageCard",
+    {"mobiledoc":
+      {"version":"0.3.0",
+       "atoms":[],
+       "cards":[],
+       "markups":[],
+       "sections":
+        [[1, "p", [[0, [], 0, "Peter receives an honorary diploma with a painted picture of himself from his students and colleagues in Georgia. "]]]]},
+     "src":"//i.upworthy.com/nugget/5835202aa81f09001600007f/attachments/colleaguesDSC05367-67a29219fd715e6cd71ced9913625ef1.JPG"}],
+   ["ImageCard",
+    {"mobiledoc":
+      {"version":"0.3.0",
+       "atoms":[],
+       "cards":[],
+       "markups":[],
+       "sections":
+        [[1,
+          "p",
+          [[0,
+            [],
+            0,
+            "Peter and a community mullah drink tea and discuss equal education for girls and boys beyond secondary school in Gardabani, Georgia."]]]]},
+     "src":"//i.upworthy.com/nugget/58352042a81f090016000081/attachments/DSC01197-de761128873b1f18dae5ceb5dc59c5c5.JPG"}],
+   ["ImageCard",
+    {"mobiledoc":
+      {"version":"0.3.0",
+       "atoms":[],
+       "cards":[],
+       "markups":[],
+       "sections":[[1, "p", [[0, [], 0, "Peter and two of his students in Gardabani, Georgia."]]]]},
+     "src":"//i.upworthy.com/nugget/5835205a2855e5001f000066/attachments/DSC01747-c20f297863788f209a89c6f5d4df86d9.jpg"}]],
+ "markups":[["b"], ["strong"], ["a", ["href", "https://www.peacecorps.gov/?utm_source=Upworthy&utm_medium=Article&utm_content=3&utm_campaign=VRS"]]],
+ "sections":
+  [[1,
+    "h2",
+    [[0,
+      [0, 1],
+      2,
+      "Peter Ter doesn't know how old he is. That is the first surprising thing he'll share about his remarkable life, and it's only the beginning. "]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "Peter was born into a family of cattle farmers in Sudan. He grew up during a decades-long conflict that is one of the longest civil war<U+200B>s on record. When he was young, he was separated from his parents and sent to live in a refugee camp in Kenya."]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "When representatives from the United States government met Peter in the refugee camp in 2001, they measured his height and stature to guess his age and year of birth. The year they selected was 1980, making him 36 years old. Even then, it’s only a guess."]]],
+   [10, 0],
+   [1, "p", [[0, [1], 1, "As a child, to keep up his spirits, Peter focused on a singular goal: learning to read and write in English."]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "“I was born in a place where there were no pens or pencils,” he says. “I wanted to be somebody and I knew learning English would help me get there. I didn’t want the past to hold me back.”"]]],
+   [1,
+    "p",
+    [[0,
+      [1],
+      1,
+      "Peter’s refugee camp was massive, and the school supplies that could help him practice English were next to impossible to come by. So, he improvised. "]]],
+   [1,
+    "p",
+    [[0, [], 0, "Day after day, he would practice writing the alphabet — and later, words and phrases — by writing them over and over in the sand. "]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "“One day, one of the elders in the camp came by and watched me writing in the sand. He said ‘The sun is very hot, and you are working hard. One day the world will be like a soccer ball in your hands,’” recalls Peter. The old man then gave him a blue pen — his first. Using pieces of old cardboard he found in waste bins at the nearby UN compound, Peter practiced writing with the pen until it ran out of ink. When it did, he burned sticks to create charcoal so he could keep writing and learning. "]]],
+   [1, "h2", [[0, [], 0, "In 2001, Peter immigrated to the United States. "]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "He immediately began to pursue his education, earning a degree in political science from Florida State University. After graduation, he considered joining the U.S. Marines, until a mentor recommended a different path: the Peace Corps. "]]],
+   [1,
+    "p",
+    [[0,
+      [1],
+      1,
+      "Since 2009, Peter's spent nearly five years volunteering with the Peace Corps in three very different parts of the world: Azerbaijan, China, and the country of Georgia. "]]],
+   [10, 1],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "“In all three countries I volunteered, I felt loved, valued, and appreciated,” recalls Peter. “I learned that if a person can overcome his or her fears and become resilient and tenacious, then they can do a lot to represent America abroad.”"]]],
+   [10, 2],
+   [1, "h2", [[0, [], 0, "Peter doesn't seem like someone whose early life was filled with sadness, anxiety, and war-time trauma. "]]],
+   [1,
+    "p",
+    [[0,
+      [1],
+      1,
+      "His energy is ebullient; his laughter, infectious. He credits his favorite U.S. presidents — Abraham Lincoln and John F. Kennedy — for inspiring his positive worldview. "]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "“Through studying American history, I developed a great admiration for President Lincoln. I appreciate his views on forgiveness,” says Peter. “He has this quote that stuck with me: ‘better give your path to a dog than be bitten by him in contesting for the right; not even killing the dog will cure the bite.’ When I was younger, I was very angry about being separated from my parents. But focusing on that didn’t help me. Lincoln knew that; now, I know it too.” "]]],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "President Kennedy inspires him for a different reason: service. “President Kennedy was born into a wealthy family, but he served his country fearlessly, and when he became president, he founded the Peace Corps. I know he would appreciate my service, just like I respect his.” "]]],
+   [1, "h2", [[0, [], 0, "Peter finished his last round of service with the Peace Corps in September. "]]],
+   [10, 3],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "He's planning to go back to school for a second master's degree, this time studying foreign policy and national security at American University. After that, the world really is — as that elder told him so many years ago — his soccer ball. It might involve public service work, potentially in government or at a think tank promoting sustainable development. It may even be working with the military on his passion: a national security policy based on promoting mutual understanding and friendship. All of those careers are open to him — partly because of his focus and dedication to learning and partly because of his experience in the Peace Corps."]]],
+   [10, 4],
+   [1,
+    "p",
+    [[0,
+      [],
+      0,
+      "“America restored my dignity and gave me a valuable education. I want to do everything I can to say thank you,” says Peter proudly. “As Kennedy says, 'Ask not what your country can do for you, but what you can do for your country.' Service is my answer, wherever that takes me.”"]]],
+   [1, "p", [[0, [2], 1, "Learn more"], [0, [], 0, " about how to start your own Peace Corps journey."]]]]
 };
 
-const renderer = React.createElement(MobiledocRenderer, { mobiledoc, className: 'foo' });
+const renderer = React.createElement(MobiledocRenderer, { mobiledoc, unknownCardHandler, className: 'foo' });
 ReactDOM.render(renderer, document.getElementById('root'));
+

@@ -54,7 +54,7 @@ const reactAttrs = (attrs = {}) => {
   return attrs;
 };
 
-export const treeToReact = (opts = {}) => {
+export const nodeToComponent = (opts = {}) => {
   const sectionRenderer = tagRenderer(opts.sectionElementRenderer);
   const elementRenderer = tagRenderer(opts.markupElementRenderer);
 
