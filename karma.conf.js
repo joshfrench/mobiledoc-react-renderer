@@ -35,11 +35,6 @@ module.exports = function(config) {
             loader: 'json'
           }
         ]
-      },
-      externals: {
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
       }
     },
 
