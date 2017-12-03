@@ -67,17 +67,19 @@ export const treeToReact = (opts = {}) => {
     [MARKUP_MARKER_TYPE] : elementRenderer
   };
 
-  const reactify = ([nodeType, tag, attrs, children = []]) => {
-    if (renderers[nodeType]) {
-      const [nodeTag, nodeAttrs] = renderers[nodeType]([tag, attrs]);
-      if (nodeTag) {
-        return React.createElement(nodeTag, reactAttrs(nodeAttrs), children.map((c) => {
-          return Array.isArray(c) ? reactify(c) : c;
-        }));
+  const reactify = (node) => {
+    if (Array.isArray(node)) {
+      const [nodeType, tag, attrs, children = []] = node;
+      const renderer = renderers[nodeType];
+      if (renderer) {
+        const [nodeTag, nodeAttrs] = renderer([tag, attrs]);
+        if (nodeTag) {
+          return React.createElement(nodeTag, reactAttrs(nodeAttrs), children.map(reactify));
+        }
       }
+    } else {
+      return node;
     }
-
-    return null;
   };
 
   return reactify;
