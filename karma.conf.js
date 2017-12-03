@@ -44,7 +44,11 @@ module.exports = function(config) {
     },
 
     webpackMiddleware: {
-      noInfo: true
+      noInfo: true,
+      stats: {
+        chunks: false,
+        errorDetails: true
+      }
     },
 
     // test results reporter to use
