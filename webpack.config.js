@@ -15,10 +15,10 @@ config.output = {
 };
 
 config.module = {
-  loaders: [
+  rules: [
     {
       test: /\.js$/,
-      loaders: ['babel'],
+      loaders: ['babel-loader'],
       exclude: /node_modules/
     }
   ]
@@ -38,7 +38,7 @@ if (TARGET === 'start' || !TARGET) {
       hot: true,
       inline: true,
       progress: true,
-      stats: 'error-only'
+      stats: 'errors-only'
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin()
