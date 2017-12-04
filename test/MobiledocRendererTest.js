@@ -119,4 +119,20 @@ describe('<MobiledocRenderer />', () => {
       '<div><ul><li>foo</li><li>bar</li></ul></div>'
     );
   });
+
+  it('provides keys to sibling elements', () => {
+    const mobiledoc = {
+      sections: [
+        [LIST_SECTION_TYPE, 'ul', [
+          [MD_MARKUP_MARKER_TYPE, [], 0, 'foo'],
+          [MD_MARKUP_MARKER_TYPE, [], 0, 'bar'],
+          [MD_MARKUP_MARKER_TYPE, [], 0, 'baz']
+        ]]
+      ]
+    };
+    const wrapper = shallow(<MobiledocRenderer mobiledoc={mobiledoc} />);
+    const list = wrapper.find('li');
+    expect(list.at(0).key()).to.eql('0');
+    expect(list.at(2).key()).to.eql('2');
+  });
 });
