@@ -24,27 +24,22 @@ module.exports = function(config) {
     webpack: {
       devtool: 'inline-source-map',
       module: {
-        loaders: [
+        rules: [
           {
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             exclude: /node_modules\//
-          },
-          {
-            test: /\.json$/,
-            loader: 'json'
           }
         ]
-      },
-      externals: {
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
       }
     },
 
     webpackMiddleware: {
-      noInfo: true
+      noInfo: true,
+      stats: {
+        chunks: false,
+        errorDetails: true
+      }
     },
 
     // test results reporter to use
@@ -67,7 +62,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     browserNoActivityTimeout: 60000,
 
     // Continuous Integration mode

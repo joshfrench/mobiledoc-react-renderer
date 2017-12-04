@@ -23,7 +23,7 @@
     "arrow-spacing": 1,
     "brace-style": [1, "1tbs", {"allowSingleLine": true}],
     "comma-style": [1, "last"],
-    "indent": [1, 2],
+    "indent": [1, 2, { "MemberExpression": "off" }],
     "keyword-spacing": 1,
     "linebreak-style": [1, "unix"],
     "no-console": 1,
