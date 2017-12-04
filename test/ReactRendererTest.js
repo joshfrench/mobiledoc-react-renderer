@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
-import { treeToReact } from '../src/ReactRenderer';
+import { nodeToComponent } from '../src/ReactRenderer';
 import {
   CARD_SECTION_TYPE,
   MARKUP_SECTION_TYPE,
@@ -13,8 +13,8 @@ import {
   E_UNKNOWN_ATOM
 } from '../src/utils/Errors';
 
-describe('treeToReact()', () => {
-  const simpleTree = treeToReact();
+describe('nodeToComponent()', () => {
+  const simpleTree = nodeToComponent();
 
   it('renders a simple element', () => {
     const wrapper = shallow(simpleTree([MARKUP_SECTION_TYPE, 'p', {}]));
@@ -40,7 +40,7 @@ describe('treeToReact()', () => {
         [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
       ]];
 
-      const wrapper = shallow(treeToReact({ atoms: [AnAtom]})(tree));
+      const wrapper = shallow(nodeToComponent({ atoms: [AnAtom]})(tree));
       expect(wrapper).to.have.html('<p><span>@ohai</span></p>');
     });
 
@@ -49,7 +49,7 @@ describe('treeToReact()', () => {
         [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
       ]];
       const unknownAtomHandler = ({ name, value }) => <span>{`${name}: ${value}`}</span>;
-      const wrapper = shallow(treeToReact({ unknownAtomHandler })(tree));
+      const wrapper = shallow(nodeToComponent({ unknownAtomHandler })(tree));
 
       expect(wrapper).to.have.html('<p><span>AnAtom: ohai</span></p>');
     });
@@ -68,7 +68,7 @@ describe('treeToReact()', () => {
       Card.displayName = 'aCard';
 
       const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []];
-      const wrapper = shallow(treeToReact({ cards: [Card]})(tree));
+      const wrapper = shallow(nodeToComponent({ cards: [Card]})(tree));
       expect(wrapper).to.have.html('<div>Hello Hodor</div>');
     });
 
@@ -76,7 +76,7 @@ describe('treeToReact()', () => {
       const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}];
       const unknownCardHandler = ({ name, payload }) => <div>{`${name}: ${payload.name}`}</div>;
 
-      const wrapper = shallow(treeToReact({ unknownCardHandler })(tree));
+      const wrapper = shallow(nodeToComponent({ unknownCardHandler })(tree));
       expect(wrapper).to.have.html('<div>aCard: Hodor</div>');
     });
 
@@ -90,7 +90,7 @@ describe('treeToReact()', () => {
     it('accepts a sectionElementRenderer with a simple tag', () => {
       const tree = [MARKUP_SECTION_TYPE, 'p', {}];
       const sectionElementRenderer = { 'p': 'aside' };
-      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      const wrapper = shallow(nodeToComponent({ sectionElementRenderer })(tree));
       expect(wrapper).to.have.html('<aside></aside>');
     });
 
@@ -98,14 +98,14 @@ describe('treeToReact()', () => {
       const MyComponent = () => <aside></aside>;
       const sectionElementRenderer = { 'p': MyComponent };
       const tree = [MARKUP_SECTION_TYPE, 'p', {}];
-      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      const wrapper = shallow(nodeToComponent({ sectionElementRenderer })(tree));
       expect(wrapper).to.have.html('<aside></aside>');
     });
 
     it('passes children to sectionElementRenderer', () => {
       const tree = [MARKUP_SECTION_TYPE, 'p', {}, ['ohai']];
       const sectionElementRenderer = { 'p': 'aside' };
-      const wrapper = shallow(treeToReact({ sectionElementRenderer })(tree));
+      const wrapper = shallow(nodeToComponent({ sectionElementRenderer })(tree));
       expect(wrapper).to.have.html('<aside>ohai</aside>');
     });
   });
@@ -120,7 +120,7 @@ describe('treeToReact()', () => {
     it('accepts a markupElementRenderer with a simple tag', () => {
       const tree = [MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']];
       const markupElementRenderer = { 'strong': 'em' };
-      const wrapper = shallow(treeToReact({ markupElementRenderer })(tree));
+      const wrapper = shallow(nodeToComponent({ markupElementRenderer })(tree));
       expect(wrapper).to.have.html('<em>ohai</em>');
     });
 
@@ -128,7 +128,7 @@ describe('treeToReact()', () => {
       const MyComponent = () => <em></em>;
       const markupElementRenderer = { 'strong': MyComponent };
       const tree = [MARKUP_MARKER_TYPE, 'strong', {}];
-      const wrapper = shallow(treeToReact({ markupElementRenderer })(tree));
+      const wrapper = shallow(nodeToComponent({ markupElementRenderer })(tree));
       expect(wrapper).to.have.html('<em></em>');
     });
   });
