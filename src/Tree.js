@@ -41,6 +41,9 @@ const getCard = (idx, cardList = []) => {
   return [name, { payload: { ...payload }}]; // deref payload (no value)
 };
 
+// should return a component and its children
+// will need to accept a renderer which does the actual work
+// of converting [type, tag, children] into a component/node/whatever
 const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
   return ([type, tag, children]) => {
     switch (type) {
@@ -77,7 +80,13 @@ const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
   };
 };
 
-export const nodesToTags = ({ markups, cards, atoms } = {}) => {
+// proposed sig:
+// renderer = new ReactRenderer({ cards, atoms, sectionElementRenderer,
+//                                markupElementRenderer, unknownCardHandler,
+//                                unknownAtomHandler });
+// renderer(type, element, attrs, children) => component;
+// nodesToTags(mobiledoc, renderer)
+export const nodesToTags = ({ markups, cards, atoms } = {}, renderer) => {
   const expandMarkers = dispatcher({ markups, cards, atoms });
   const nodeToTag = (node) => {
     if (Array.isArray(node)) {
