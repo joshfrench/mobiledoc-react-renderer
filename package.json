@@ -13,12 +13,11 @@
   "dependencies": {
     "babel-plugin-react-transform": "^3.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "enzyme-adapter-react-15.4": "^1.0.5",
-    "react-addons-test-utils": "15.3.1"
+    "enzyme-adapter-react-16": "^1.1.0"
   },
   "peerDependencies": {
-    "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react": ">= 15.3.0 <=16",
+    "react-dom": ">= 15.3.0 <=16"
   },
   "devDependencies": {
     "babel-core": "^6.7.7",
@@ -42,8 +41,8 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.6",
     "mocha": "^4.0.1",
-    "react": "15.3.1",
-    "react-dom": "15.3.1",
+    "react": "^16.0",
+    "react-dom": "^16.0",
     "react-transform-hmr": "^1.0.4",
     "sinon": "^4.1.2",
     "sinon-chai": "^2.14.0",
