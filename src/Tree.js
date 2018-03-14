@@ -9,7 +9,8 @@ import {
 import {
   E_NO_ATOM_AT_INDEX,
   E_NO_CARD_AT_INDEX,
-  E_UNKNOWN_MARKER_TYPE
+  E_UNKNOWN_MARKER_TYPE,
+  E_NO_RENDERING_FUNCTION
 } from './utils/Errors';
 import {
   isValidMarkerType,
@@ -41,57 +42,54 @@ const getCard = (idx, cardList = []) => {
   return [name, { payload: { ...payload }}]; // deref payload (no value)
 };
 
-// should return a component and its children
-// will need to accept a renderer which does the actual work
-// of converting [type, tag, attrs, children] into a component/node/whatever
 const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
-  return ([type, tag, children]) => {
+  return ([type, tag, children = []]) => {
+    let attrs = {};
     switch (type) {
     case MARKUP_SECTION_TYPE: {
-      const attrs = {};
       if (!isMarkupSectionElementName(tag)) {
         attrs['class'] = tag;
         tag = 'div';
       }
-      return [type, tag, attrs, children];
+      break;
     }
     case CARD_SECTION_TYPE: {
-      const [card, payload = {}] = getCard(tag, cards);
-      return [type, card, payload];
+      [tag, attrs] = getCard(tag, cards);
+      break;
     }
     case LIST_SECTION_TYPE: {
-      const items = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
-      return [type, tag, {}, items];
+      children = children.map((child) => [LIST_ITEM_TYPE, 'li', [child]]);
+      break;
     }
     case MARKUP_MARKER_TYPE: {
-      const [tagname, attrs = []] = markups[tag];
-      if (!isValidMarkerType(tagname)) {
-        throw new Error(E_UNKNOWN_MARKER_TYPE(tagname));
+      [tag, attrs = []] = markups[tag];
+      if (!isValidMarkerType(tag)) {
+        throw new Error(E_UNKNOWN_MARKER_TYPE(tag));
       }
-      return [type, tagname, attrs.reduce(kvReduce, {}), children];
+      attrs = attrs.reduce(kvReduce, {});
+      break;
     }
     case ATOM_MARKER_TYPE: {
-      const [atom, attrs = {}] = getAtom(tag, atoms);
-      return [type, atom, attrs];
+      [tag, attrs = {}] = getAtom(tag, atoms);
+      break;
     }
-    default:
-      return [type, tag, {}, children];
     }
+    return [type, tag, attrs, children];
   };
 };
 
-// proposed sig:
-// renderer = new ReactRenderer({ cards, atoms, sectionElementRenderer,
-//                                markupElementRenderer, unknownCardHandler,
-//                                unknownAtomHandler });
-// renderer(type, element, attrs, children) => component;
-// nodesToTags(mobiledoc, renderer)
-export const nodesToTags = ({ markups, cards, atoms } = {}, renderer) => {
+const abstractRenderer = (x) => x;
+
+export const expandNodes = ({ markups, cards, atoms } = {}, renderer = abstractRenderer) => {
+  if (typeof renderer !== 'function') {
+    throw new Error(E_NO_RENDERING_FUNCTION);
+  }
+
   const expandMarkers = dispatcher({ markups, cards, atoms });
   const nodeToTag = (node) => {
     if (Array.isArray(node)) {
-      const [type, tagName, attrs, children = []] = expandMarkers(node);
-      return [type, tagName, attrs, children.map(nodeToTag)];
+      const [type, tagName, attrs = {}, children = []] = expandMarkers(node);
+      return renderer([type, tagName, attrs, children.map(nodeToTag)]);
     } else {
       return node;
     }

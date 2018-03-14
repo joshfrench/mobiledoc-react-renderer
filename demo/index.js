@@ -13,4 +13,3 @@ const mobiledoc = {"version":"0.3.0","atoms":[],"cards":[["ImageCard",{"mobiledo
 
 const renderer = React.createElement(MobiledocRenderer, { mobiledoc, cards: [ImageCard], className: 'cetaceous' });
 ReactDOM.render(renderer, document.getElementById('root'));
-

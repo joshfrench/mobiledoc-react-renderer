@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { nodesToTags } from '../src/Tree';
+import { expandNodes } from '../src/Tree';
 import {
   CARD_SECTION_TYPE,
   MARKUP_SECTION_TYPE,
@@ -10,10 +10,15 @@ import {
 } from '../src/utils/nodeTypes';
 import {
   E_NO_ATOM_AT_INDEX,
-  E_UNKNOWN_MARKER_TYPE
+  E_UNKNOWN_MARKER_TYPE,
+  E_NO_RENDERING_FUNCTION
 } from '../src/utils/Errors';
 
-describe('nodesToTags()', () => {
+describe('expandNodes()', () => {
+  it('requires a renderer', () => {
+    expect(() => expandNodes({}, null)).to.throw(E_NO_RENDERING_FUNCTION);
+  });
+
   it('maps markup markers to nodes', () => {
     const markups = [
       ['a', ['rel', 'nofollow']]
@@ -21,7 +26,8 @@ describe('nodesToTags()', () => {
     const tree = [MARKUP_SECTION_TYPE, 'p', [
       [MARKUP_MARKER_TYPE, 0, ['ohai']]
     ]];
-    expect(nodesToTags({ markups })(tree)).to.eql([
+
+    expect(expandNodes({ markups })(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'p', {}, [
         [MARKUP_MARKER_TYPE, 'a', { 'rel': 'nofollow' }, ['ohai']]
       ]
@@ -35,7 +41,7 @@ describe('nodesToTags()', () => {
     const cards = [['aCard', { name: 'Hodor' }]];
     const tree = [CARD_SECTION_TYPE, 0];
 
-    expect(nodesToTags({ cards })(tree)).to.eql([
+    expect(expandNodes({ cards })(tree)).to.eql([
       CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []
     ]);
   });
@@ -51,7 +57,7 @@ describe('nodesToTags()', () => {
       [ATOM_MARKER_TYPE, 0]
     ]];
 
-    expect(nodesToTags({ atoms })(tree)).to.eql([
+    expect(expandNodes({ atoms })(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'p', {}, [
         [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "@ohai" }, []]
       ]
@@ -63,7 +69,7 @@ describe('nodesToTags()', () => {
       [ATOM_MARKER_TYPE, 0]
     ]];
 
-    const noAtoms = () => nodesToTags()(tree);
+    const noAtoms = () => expandNodes()(tree);
     expect(noAtoms).to.throw(E_NO_ATOM_AT_INDEX(0));
   });
 
@@ -74,13 +80,13 @@ describe('nodesToTags()', () => {
     const tree = [MARKUP_SECTION_TYPE, 'p', [
       [MARKUP_MARKER_TYPE, 0, ['ohai']]
     ]];
-    const unknownMarker = () => nodesToTags({ markups })(tree);
+    const unknownMarker = () => expandNodes({ markups })(tree);
     expect(unknownMarker).to.throw(E_UNKNOWN_MARKER_TYPE('not-a-tag'));
   });
 
   it('folds `pull-quote` section to div.pull-quote', () => {
     const tree = [MARKUP_SECTION_TYPE, 'pull-quote', ['ohai']];
-    expect(nodesToTags()(tree)).to.eql([
+    expect(expandNodes()(tree)).to.eql([
       MARKUP_SECTION_TYPE, 'div', { class: 'pull-quote' }, ["ohai"]
     ]);
   });
@@ -93,7 +99,7 @@ describe('nodesToTags()', () => {
       [MARKUP_MARKER_TYPE, 0, ['foo']],
       'bar'
     ]];
-    expect(nodesToTags({ markups })(tree)).to.eql([
+    expect(expandNodes({ markups })(tree)).to.eql([
       LIST_SECTION_TYPE, 'ul', {}, [
         [LIST_ITEM_TYPE, 'li', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, ['foo']]]],
         [LIST_ITEM_TYPE, 'li', {}, ['bar']]

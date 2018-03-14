@@ -1,7 +1,7 @@
 import React from 'react';
 import { sectionToTree } from './Section';
-import { nodesToTags } from './Tree';
-import { nodeToComponent } from './ReactRenderer';
+import { expandNodes } from './Tree';
+import ReactRenderer from './ReactRenderer';
 
 const MobiledocRenderer = ({ mobiledoc = {}, rootElement = 'div',
                              sectionElementRenderer, markupElementRenderer,
@@ -9,11 +9,9 @@ const MobiledocRenderer = ({ mobiledoc = {}, rootElement = 'div',
                              unknownCardHandler, unknownAtomHandler,
                              ...props }) => {
   mobiledoc.sections = mobiledoc.sections || [];
+  const renderer = new ReactRenderer({ cards, atoms, sectionElementRenderer, markupElementRenderer, unknownCardHandler, unknownAtomHandler });
   const children = mobiledoc.sections.map(sectionToTree)
-                                     .map(nodesToTags(mobiledoc))
-                                     .map(nodeToComponent({ cards, atoms,
-                                                            sectionElementRenderer, markupElementRenderer,
-                                                            unknownCardHandler, unknownAtomHandler }));
+                                     .map(expandNodes(mobiledoc, renderer));
 
   return React.createElement(rootElement, props, children);
 };

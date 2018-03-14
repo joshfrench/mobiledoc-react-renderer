@@ -39,26 +39,26 @@ const componentRenderer = (components = [], unknownComponentHandler, error) => (
   }
 };
 
-const reactMap = {
+const REACT_ATTR_MAP = {
   "class": "className"
 };
 
 const reactAttrs = (attrs = {}) => {
   attrs = { ...attrs };
-  for (const key in reactMap) {
+  for (const key in REACT_ATTR_MAP) {
     if (attrs[key]) {
-      attrs[reactMap[key]] = attrs[key];
+      attrs[REACT_ATTR_MAP[key]] = attrs[key];
       delete attrs[key];
     }
   }
   return attrs;
 };
 
-export const nodeToComponent = (opts = {}) => {
+export default function ReactRenderer(opts = {}) {
   const sectionRenderer = tagRenderer(opts.sectionElementRenderer);
   const elementRenderer = tagRenderer(opts.markupElementRenderer);
 
-  const renderers = {
+  const RENDERERS = {
     [MARKUP_SECTION_TYPE] : sectionRenderer,
     [LIST_SECTION_TYPE] : sectionRenderer,
     [LIST_ITEM_TYPE]: sectionRenderer,
@@ -69,18 +69,19 @@ export const nodeToComponent = (opts = {}) => {
 
   const reactify = (node, key) => {
     if (Array.isArray(node)) {
-      const [nodeType, tag, attrs, children = []] = node;
-      const renderer = renderers[nodeType];
+      const [type, tag, attrs = {}, children = []] = node;
+
+      const renderer = RENDERERS[type];
       if (renderer) {
         const [nodeTag, nodeAttrs] = renderer([tag, attrs]);
         if (nodeTag) {
           return React.createElement(nodeTag, reactAttrs({ key, ...nodeAttrs }), children.map(reactify));
         }
       }
-    } else {
-      return node;
     }
+
+    return node;
   };
 
   return reactify;
-};
+}
