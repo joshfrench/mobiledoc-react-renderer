@@ -114,4 +114,28 @@ describe.only('ReactRenderer()', () => {
       expect(renderTree).to.throw(E_UNKNOWN_ATOM("MissingAtom"));
     });
   });
+
+  describe('card section', () => {
+    it('maps cards to components', () => {
+      const Card = ({ payload: { name }}) => <div>Hello {name}</div>;
+      Card.displayName = 'aCard';
+
+      const cardRenderer = new ReactRenderer({ cards: [Card]});
+      const wrapper = shallow(cardRenderer([CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []]));
+      expect(wrapper).to.have.html('<div>Hello Hodor</div>');
+    });
+
+    it('passes unknown cards to unknownCardHandler', () => {
+      const unknownCardHandler = ({ name, payload }) => <div>{`${name}: ${payload.name}`}</div>;
+
+      const cardRenderer = new ReactRenderer({ unknownCardHandler });
+      const wrapper = shallow(cardRenderer([CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}]));
+      expect(wrapper).to.have.html('<div>aCard: Hodor</div>');
+    });
+
+    it('raises if card cannot be found and no handler is supplied', () => {
+      const renderTree = () => simpleRenderer([CARD_SECTION_TYPE, 'MissingCard', []]);
+      expect(renderTree).to.throw(E_UNKNOWN_CARD('MissingCard'));
+    });
+  });
 });

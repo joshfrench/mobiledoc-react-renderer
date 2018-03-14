@@ -63,27 +63,27 @@ describe('nodeToComponent()', () => {
   });
 
   describe('renderCardSection', () => {
-    it('maps cards to components', () => {
-      const Card = ({ payload: { name } }) => <div>Hello {name}</div>;
-      Card.displayName = 'aCard';
+    // it('maps cards to components', () => {
+    //   const Card = ({ payload: { name } }) => <div>Hello {name}</div>;
+    //   Card.displayName = 'aCard';
+    //
+    //   const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []];
+    //   const wrapper = shallow(nodeToComponent({ cards: [Card]})(tree));
+    //   expect(wrapper).to.have.html('<div>Hello Hodor</div>');
+    // });
 
-      const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}, []];
-      const wrapper = shallow(nodeToComponent({ cards: [Card]})(tree));
-      expect(wrapper).to.have.html('<div>Hello Hodor</div>');
-    });
+    // it('passes unknown cards to unknownCardHandler', () => {
+    //   const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}];
+    //   const unknownCardHandler = ({ name, payload }) => <div>{`${name}: ${payload.name}`}</div>;
+    //
+    //   const wrapper = shallow(nodeToComponent({ unknownCardHandler })(tree));
+    //   expect(wrapper).to.have.html('<div>aCard: Hodor</div>');
+    // });
 
-    it('passes unknown cards to unknownCardHandler', () => {
-      const tree = [CARD_SECTION_TYPE, 'aCard', { payload: { name: 'Hodor' }}];
-      const unknownCardHandler = ({ name, payload }) => <div>{`${name}: ${payload.name}`}</div>;
-
-      const wrapper = shallow(nodeToComponent({ unknownCardHandler })(tree));
-      expect(wrapper).to.have.html('<div>aCard: Hodor</div>');
-    });
-
-    it('raises if card cannot be found and no handler is supplied', () => {
-      const renderTree = () => simpleTree([CARD_SECTION_TYPE, 'MissingCard', []]);
-      expect(renderTree).to.throw(E_UNKNOWN_CARD('MissingCard'));
-    });
+    // it('raises if card cannot be found and no handler is supplied', () => {
+    //   const renderTree = () => simpleTree([CARD_SECTION_TYPE, 'MissingCard', []]);
+    //   expect(renderTree).to.throw(E_UNKNOWN_CARD('MissingCard'));
+    // });
   });
 
   describe('renderMarkupSection()', () => {
