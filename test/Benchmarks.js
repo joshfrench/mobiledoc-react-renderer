@@ -2,7 +2,6 @@
 
 import DOMRenderer from 'mobiledoc-dom-renderer';
 import ReactRenderer from '../src/MobiledocRenderer';
-import DirectReactRenderer from '../src/DirectMobiledocRenderer';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -18,18 +17,10 @@ ReactImageCard.displayName = 'ImageCard';
 
 const reactRenderer = React.createElement(ReactRenderer, { mobiledoc, cards: [ReactImageCard]});
 
-suite.add('React 2-pass rendering', () => {
+suite.add('React rendering', () => {
   const target = document.createElement('div');
   document.body.appendChild(target);
   ReactDOM.render(reactRenderer, target);
-});
-
-const directReactRenderer = React.createElement(DirectReactRenderer, { mobiledoc, cards: [ReactImageCard]});
-
-suite.add('React direct rendering', () => {
-  const target = document.createElement('div');
-  document.body.appendChild(target);
-  ReactDOM.render(directReactRenderer, target);
 });
 
 const captionRenderer = new DOMRenderer.default({
@@ -57,8 +48,8 @@ const DOMImageCard = {
 
 const domRenderer = new DOMRenderer.default({ cards: [DOMImageCard]});
 
-// suite.add('Mobiledoc DOM renderer', () => {
-//   const result = domRenderer.render(mobiledoc).result;
-//   document.body.appendChild(result);
-// });
+suite.add('Mobiledoc DOM renderer', () => {
+  const result = domRenderer.render(mobiledoc).result;
+  document.body.appendChild(result);
+});
 
