@@ -43,7 +43,7 @@ const getCard = (idx, cardList = []) => {
 
 // should return a component and its children
 // will need to accept a renderer which does the actual work
-// of converting [type, tag, children] into a component/node/whatever
+// of converting [type, tag, attrs, children] into a component/node/whatever
 const dispatcher = ({ markups = {}, cards = {}, atoms = {}}) => {
   return ([type, tag, children]) => {
     switch (type) {
