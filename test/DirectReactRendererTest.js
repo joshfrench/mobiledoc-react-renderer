@@ -81,4 +81,37 @@ describe.only('ReactRenderer()', () => {
       expect(wrapper).to.have.html('<em></em>');
     });
   });
+
+  describe('atom marker', () => {
+    it('maps atoms to components', () => {
+      const AnAtom = ({ value }) => <span>@{value}</span>;
+      AnAtom.displayName = 'AnAtom';
+
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
+      ]];
+
+      const atomRenderer = new ReactRenderer({ atoms: [AnAtom]});
+      const wrapper = shallow(atomRenderer(tree));
+      expect(wrapper).to.have.html('<p><span>@ohai</span></p>');
+    });
+
+    it('passes unknown atoms to unknownAtomHandler', () => {
+      const tree = [MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, "AnAtom", { payload: { id: 42 }, value: "ohai" }, []]
+      ]];
+      const unknownAtomHandler = ({ name, value }) => <span>{`${name}: ${value}`}</span>;
+      const atomRenderer = new ReactRenderer({ unknownAtomHandler });
+      const wrapper = shallow(atomRenderer(tree));
+
+      expect(wrapper).to.have.html('<p><span>AnAtom: ohai</span></p>');
+    });
+
+    it('throws if an atom cannot be found and no handler is supplied', () => {
+      const renderTree = () => simpleRenderer([MARKUP_SECTION_TYPE, 'p', {}, [
+        [ATOM_MARKER_TYPE, "MissingAtom", {}, []]
+      ]]);
+      expect(renderTree).to.throw(E_UNKNOWN_ATOM("MissingAtom"));
+    });
+  });
 });

@@ -77,6 +77,7 @@ export default function ReactRenderer(opts = {}) {
 
       switch (type) {
       case MARKUP_SECTION_TYPE: {
+        // TODO: maybe this should live in Tree?
         if (!isMarkupSectionElementName(tag)) {
           attrs['className'] = tag;
           tag = 'div';
