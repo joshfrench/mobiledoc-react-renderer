@@ -67,7 +67,7 @@ export default function ReactRenderer(opts = {}) {
     [MARKUP_MARKER_TYPE] : elementRenderer
   };
 
-  const reactify = (node, key) => {
+  const reactify = (node) => {
     if (Array.isArray(node)) {
       const [type, tag, attrs = {}, children = []] = node;
 
@@ -75,7 +75,7 @@ export default function ReactRenderer(opts = {}) {
       if (renderer) {
         const [nodeTag, nodeAttrs] = renderer([tag, attrs]);
         if (nodeTag) {
-          return React.createElement(nodeTag, reactAttrs({ key, ...nodeAttrs }), children.map(reactify));
+          return React.createElement(nodeTag, reactAttrs(nodeAttrs), children.map(reactify));
         }
       }
     }
