@@ -8,7 +8,7 @@ import {
 import DOMRenderer from '../src/DOMRenderer';
 
 function innerHTML(parentNode) {
-  let content = [];
+  const content = [];
   let node = parentNode.firstChild;
   while (node) {
     content.push(node.outerHTML);
@@ -22,13 +22,38 @@ describe.only('DOM Renderer', () => {
 
   describe('Markup section', () => {
     it('renders a simple element', () => {
-      const rendered = simpleRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, ['ohai']])
+      const rendered = simpleRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, ['ohai']]);
       expect(innerHTML(rendered.result)).to.eq('<p>ohai</p>');
     });
 
     it('renders nested elements', () => {
       const rendered = simpleRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, [[MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']]]]);
       expect(innerHTML(rendered.result)).to.eq('<p><strong>ohai</strong></p>');
+    });
+
+    it('accepts a sectionElementRenderer', () => {
+      const sectionElementRenderer = {
+        'P': (_, dom) => dom.createElement('aside')
+      };
+      const sectionRenderer = new DOMRenderer({ sectionElementRenderer });
+      const rendered = sectionRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, ['ohai']]);
+      expect(innerHTML(rendered.result)).to.eq('<aside>ohai</aside>');
+    });
+  });
+
+  describe('Markup marker', () => {
+    it('renders an allowed tag', () => {
+      const rendered = simpleRenderer.render([MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']]);
+      expect(innerHTML(rendered.result)).to.eq('<strong>ohai</strong>');
+    });
+
+    it('accepts a markupElementRenderer', () => {
+      const markupElementRenderer = {
+        'strong': (_, dom) => dom.createElement('em')
+      };
+      const markupRenderer = new DOMRenderer({ markupElementRenderer });
+      const rendered = markupRenderer.render([MARKUP_MARKER_TYPE, 'strong', {}, ['ohai']]);
+      expect(innerHTML(rendered.result)).to.eq('<em>ohai</em>');
     });
   });
 });
