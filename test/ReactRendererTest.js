@@ -133,4 +133,5 @@ describe('ReactRenderer()', () => {
       expect(renderTree).to.throw(E_UNKNOWN_CARD('MissingCard'));
     });
   });
+  // TODO: specs for lists
 });
