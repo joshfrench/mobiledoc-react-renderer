@@ -15,14 +15,26 @@ class TagRenderer {
     });
   }
 
-  renderTag(tagName, dom) {
-    tagName = tagName.toLowerCase();
-    const renderer = this._renderers[tagName] || this.defaultTagRenderer;
-    return renderer(tagName, dom);
+  render({ name, env }) {
+    name = name.toLowerCase();
+    const renderer = this._renderers[name] || this.defaultTagRenderer;
+    return renderer(name, env.dom);
   }
 
   defaultTagRenderer(tagName, dom) {
     return dom.createElement(tagName);
+  }
+}
+
+class AtomRenderer {
+  constructor(atoms = []) {
+    this.atoms = atoms;
+  }
+
+  render({ name, env, options }) {
+    const { payload, value } = options;
+    const atomType = this.atoms.find((a) => a.name === name);
+    return atomType.render({ env, options, payload, value });
   }
 }
 
@@ -31,11 +43,13 @@ export default class DOMRenderer {
     this.dom = window.document;
     const {
       sectionElementRenderer,
-      markupElementRenderer
+      markupElementRenderer,
+      atoms
     } = opts;
     this.renderers = {
       [MARKUP_SECTION_TYPE]: new TagRenderer(sectionElementRenderer),
-      [MARKUP_MARKER_TYPE]: new TagRenderer(markupElementRenderer)
+      [MARKUP_MARKER_TYPE]: new TagRenderer(markupElementRenderer),
+      [ATOM_MARKER_TYPE]: new AtomRenderer(atoms)
     };
   }
 
@@ -43,10 +57,10 @@ export default class DOMRenderer {
     let element;
 
     if (Array.isArray(node)) {
-      const [type, tag, attrs, children=[]] = node;
+      const [type, name, options, children=[]] = node;
       const renderer = this.renderers[type];
       if (renderer) {
-        element = renderer.renderTag(tag, this.dom);
+        element = renderer.render({ name, env: { dom: this.dom }, options });
         children.map((child) => this.render(child, element));
       }
     } else {

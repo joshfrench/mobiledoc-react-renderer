@@ -56,4 +56,20 @@ describe.only('DOM Renderer', () => {
       expect(innerHTML(rendered.result)).to.eq('<em>ohai</em>');
     });
   });
+
+  describe('Atom marker', () => {
+    it('renders a simple atom', () => {
+      const anAtom = {
+        name: 'anAtom',
+        type: 'dom',
+        render({ env, value }) {
+          return env.dom.createTextNode(`Hello ${value}`);
+        }
+      };
+      const atomRenderer = new DOMRenderer({ atoms: [anAtom]});
+      const rendered = atomRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, [
+                                             [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "Hodor" }]]]);
+      expect(innerHTML(rendered.result)).to.eq('<p>Hello Hodor</p>');
+    });
+  });
 });
