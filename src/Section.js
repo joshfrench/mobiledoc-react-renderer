@@ -13,8 +13,8 @@ export const sectionToTree = ([type, tagName, markers = []]) => {
     throw new Error(E_UNALLOWED_SECTION_TAG(tagName));
   }
 
-  const section = [type, tagName, []];
-  const stack = [section];
+  const tree = [type, tagName, []];
+  const stack = [tree];
   markers.forEach(([markerType, tagsToOpen, tagsToClose, value]) => {
     // open zero or more tags
     tagsToOpen.forEach((tag) => {
@@ -35,5 +35,5 @@ export const sectionToTree = ([type, tagName, markers = []]) => {
     }
   });
 
-  return section;
+  return tree;
 };
