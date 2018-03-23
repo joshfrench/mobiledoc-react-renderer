@@ -46,6 +46,26 @@ class AtomRenderer {
   }
 }
 
+class CardRenderer{
+  constructor(cards = [], unknownCardHandler) {
+    this.cards = cards;
+    this.unknownCardHandler = unknownCardHandler || this.defaultUnknownCardHandler;
+  }
+
+  render({ name, env, options }) {
+    const { payload } = options;
+    const cardType = this.cards.find((c) => c.name === name);
+    if (!cardType) {
+      return this.unknownCardHandler({ name, env, options });
+    }
+    return cardType.render({ env, options, payload });
+  }
+
+  defaultUnknownCardHandler({ name }) {
+    throw new Error(`Card "${name}" not found but no unknownCardHandler was registered.`);
+  }
+}
+
 export default class DOMRenderer {
   constructor(opts = {}) {
     this.dom = window.document;
@@ -53,12 +73,15 @@ export default class DOMRenderer {
       sectionElementRenderer,
       markupElementRenderer,
       atoms,
-      unknownAtomHandler
+      unknownAtomHandler,
+      cards,
+      unknownCardHandler
     } = opts;
     this.renderers = {
       [MARKUP_SECTION_TYPE]: new TagRenderer(sectionElementRenderer),
       [MARKUP_MARKER_TYPE]: new TagRenderer(markupElementRenderer),
-      [ATOM_MARKER_TYPE]: new AtomRenderer(atoms, unknownAtomHandler)
+      [ATOM_MARKER_TYPE]: new AtomRenderer(atoms, unknownAtomHandler),
+      [CARD_SECTION_TYPE]: new CardRenderer(cards, unknownCardHandler)
     };
   }
 
