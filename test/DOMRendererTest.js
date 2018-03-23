@@ -71,5 +71,23 @@ describe.only('DOM Renderer', () => {
                                              [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "Hodor" }]]]);
       expect(innerHTML(rendered.result)).to.eq('<p>Hello Hodor</p>');
     });
+
+    it('passes unknown atoms to unknownAtomHandler', () => {
+      const unknownAtomHandler = ({ env, name }) => {
+        return env.dom.createTextNode(`Unknown atom: ${name}`);
+      };
+      const atomRenderer = new DOMRenderer({ unknownAtomHandler });
+      const rendered = atomRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, [
+                                             [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "Hodor" }]]]);
+      expect(innerHTML(rendered.result)).to.eq('<p>Unknown atom: anAtom</p>');
+    });
+
+    it('throws if no atom can be found and no handler is supplied', () => {
+      const render = () => {
+        simpleRenderer.render([MARKUP_SECTION_TYPE, 'p', {}, [
+                                [ATOM_MARKER_TYPE, "anAtom", { payload: { id: 42 }, value: "Hodor" }]]])
+      };
+      expect(render).to.throw('Atom "anAtom" not found but no unknownAtomHandler was registered.');
+    });
   });
 });

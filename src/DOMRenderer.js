@@ -27,14 +27,22 @@ class TagRenderer {
 }
 
 class AtomRenderer {
-  constructor(atoms = []) {
+  constructor(atoms = [], unknownAtomHandler) {
     this.atoms = atoms;
+    this.unknownAtomHandler = unknownAtomHandler || this.defaultUnknownAtomHandler;
   }
 
   render({ name, env, options }) {
     const { payload, value } = options;
     const atomType = this.atoms.find((a) => a.name === name);
+    if (!atomType) {
+      return this.unknownAtomHandler({ name, env, options });
+    }
     return atomType.render({ env, options, payload, value });
+  }
+
+  defaultUnknownAtomHandler({ name }) {
+    throw new Error(`Atom "${name}" not found but no unknownAtomHandler was registered.`);
   }
 }
 
@@ -44,12 +52,13 @@ export default class DOMRenderer {
     const {
       sectionElementRenderer,
       markupElementRenderer,
-      atoms
+      atoms,
+      unknownAtomHandler
     } = opts;
     this.renderers = {
       [MARKUP_SECTION_TYPE]: new TagRenderer(sectionElementRenderer),
       [MARKUP_MARKER_TYPE]: new TagRenderer(markupElementRenderer),
-      [ATOM_MARKER_TYPE]: new AtomRenderer(atoms)
+      [ATOM_MARKER_TYPE]: new AtomRenderer(atoms, unknownAtomHandler)
     };
   }
 
